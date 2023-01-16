@@ -3701,6 +3701,10 @@ a.catalog-upgrade i {
   color: #F9f8fb !important;
 }
 
+.css-1nmdiq5-menu {
+  z-index: 9 !important;
+}
+
 /*new css end here*/
 @media only screen and (min-width: 767px) {
   .mvx-container .mvx-left-container .mvx-text-center .mvx-money-table-holder .mvx-money-table-coloumn:first-child {
