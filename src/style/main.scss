@@ -1,3 +1,54 @@
+@font-face {
+  font-family: 'mvx-catalog';
+  src:  url('fonts/mvx-catalog.eot?mqpu3i');
+  src:  url('fonts/mvx-catalog.eot?mqpu3i#iefix') format('embedded-opentype'),
+    url('fonts/mvx-catalog.ttf?mqpu3i') format('truetype'),
+    url('fonts/mvx-catalog.woff?mqpu3i') format('woff'),
+    url('fonts/mvx-catalog.svg?mqpu3i#mvx-catalog') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'mvx-catalog' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-button-appearance-tab:before {
+  content: "\e900";
+}
+.icon-enquiry-form-tab:before {
+  content: "\e901";
+}
+.icon-exclusion-tab:before {
+  content: "\e902";
+}
+.icon-general-tab:before {
+  content: "\e903";
+}
+.icon-live-preview-tab:before {
+  content: "\e904";
+}
+.icon-upgrade-to-pro-tab:before {
+  content: "\e905";
+}
+
+
+
+
+
+
 $base-color : #f2eff5;
 $boder-color : #d4d1d9;
 $border : 0.063rem solid #d4d1d9;
@@ -3227,7 +3278,7 @@ li.mvx-compare-table-row{
 }
  .mvx-middle-child-container{
     .mvx-current-tab-lists, .mvx-tab-content{
-      // width: 100%;
+      width: 100%;
       margin-top: -0.06rem;
       .mvx-form-vendor-register .mvx-option-part .mvx-vendor-form-input-field-container ul li{
         flex-wrap: wrap;

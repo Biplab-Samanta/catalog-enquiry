@@ -258,7 +258,7 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 				'tablabel'        =>  __('General', 'multivendorx'),
 				'apiurl'          =>  'save_enquiry',
 				'description'     =>  __('General', 'multivendorx'),
-				'icon'            =>  'icon-tab-general',
+				'icon'            =>  'icon-button-appearance-tab',
 				'submenu'         =>  'settings',
 				'modulename'      =>  [
 					[
@@ -291,42 +291,14 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 					],
 					[
 						'key'    => 'is_enable_out_of_stock',
-						'label'   => __( "Display Product Seller", 'multivendorx' ),
+						'label'   => __( "Product Enquiry Button When Product is Out Of Stock", 'multivendorx' ),
 						'class'     => 'mvx-toggle-checkbox',
 						'type'    => 'checkbox',
 						'options' => array(
 								array(
 										'key'=> "is_enable_out_of_stock",
-										'label'=> __("Showcase the product vendor's name", 'multivendorx'),
+										'label'=> __("Enable this to add the Enquiry button for the products which is out of stock. Use Exclusion settings to exclude specific product or category from enquiry.", 'multivendorx'),
 										'value'=> "is_enable_out_of_stock"
-								),
-						),
-						'database_value' => array(),
-					],
-					[
-						'key'    => 'is_hide_cart_checkout',
-						'label'   => __( "Display Product Seller", 'multivendorx' ),
-						'class'     => 'mvx-toggle-checkbox',
-						'type'    => 'checkbox',
-						'options' => array(
-								array(
-										'key'=> "is_hide_cart_checkout",
-										'label'=> __("Showcase the product vendor's name", 'multivendorx'),
-										'value'=> "is_hide_cart_checkout"
-								),
-						),
-						'database_value' => array(),
-					],
-					[
-						'key'    => 'is_page_redirect',
-						'label'   => __( "Display Product Seller", 'multivendorx' ),
-						'class'     => 'mvx-toggle-checkbox',
-						'type'    => 'checkbox',
-						'options' => array(
-								array(
-										'key'=> "is_page_redirect",
-										'label'=> __("Showcase the product vendor's name", 'multivendorx'),
-										'value'=> "is_page_redirect"
 								),
 						),
 						'database_value' => array(),
@@ -356,6 +328,120 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						'database_value' => '',
 					],
 					[
+						'key'    => 'is_hide_cart_checkout',
+						'label'   => __( "Disable Cart and Checkout Page?", 'multivendorx' ),
+						'class'     => 'mvx-toggle-checkbox',
+						'type'    => 'checkbox',
+						'options' => array(
+								array(
+										'key'=> "is_hide_cart_checkout",
+										'label'=> __("Enable this to redirect user to home page, if they click on the cart or checkout page. To set the redirection to another page kindly upgrade to WooCommerce Catalog Enquiry Pro.", 'multivendorx'),
+										'value'=> "is_hide_cart_checkout"
+								),
+						),
+						'database_value' => array(),
+					],
+					[
+						'key'       => 'redirect_page_id',
+						'type'      => 'select',
+						'label'     => __( 'Set Redirect Page', 'multivendorx' ),
+						'desc'      => __( 'Enable this to redirect user to home page, if they click on the cart or checkout page. To set the redirection to another page kindly upgrade to WooCommerce Catalog Enquiry Pro.', 'multivendorx' ),
+						'options' => $pages_array,
+						'database_value' => '',
+					],
+					[
+						'key'    => 'is_page_redirect',
+						'label'   => __( "Redirect after Enquiry form Submission", 'multivendorx' ),
+						'class'     => 'mvx-toggle-checkbox',
+						'type'    => 'checkbox',
+						'options' => array(
+								array(
+										'key'=> "is_page_redirect",
+										'label'=> __("Enable this to redirect user to another page after successful enquiry submission.", 'multivendorx'),
+										'value'=> "is_page_redirect"
+								),
+						),
+						'database_value' => array(),
+					],
+					[
+						'key'       => 'disable_cart_page_link',
+						'type'      => 'select',
+						'label'     => __( 'Set Redirect Page', 'multivendorx' ),
+						'desc'      => __( 'Select page where user will be redirected after successful enquiry.', 'multivendorx' ),
+						'options' => $pages_array,
+						'database_value' => '',
+					],
+
+
+
+
+
+
+					[
+							'key'    => 'is_remove_price_free',
+							'label'   => __( "Remove Product Price?", 'multivendorx' ),
+							'class'     => 'mvx-toggle-checkbox',
+							'type'    => 'checkbox',
+							'options' => array(
+									array(
+											'key'=> "is_remove_price_free",
+											'label'=> __("Enable this option to remove the product price display from site.", 'multivendorx'),
+											'value'=> "is_remove_price_free"
+									),
+							),
+							'database_value' => array(),
+					],
+					[
+							'key'    => 'is_remove_price_free',
+							'label'   => __( "Disable Enquiry form via popup?", 'multivendorx' ),
+							'class'     => 'mvx-toggle-checkbox',
+							'type'    => 'checkbox',
+							'options' => array(
+									array(
+											'key'=> "is_remove_price_free",
+											'label'=> __("By default the form will be displayed via popup. Enable this, if you want to display the form below the product description.", 'multivendorx'),
+											'value'=> "is_remove_price_free"
+									),
+							),
+							'database_value' => array(),
+					],
+					[
+						'key'    => 'is_other_admin_mail',
+						'label'   => __( "Remove admin email", 'multivendorx' ),
+						'class'     => 'mvx-toggle-checkbox',
+						'type'    => 'checkbox',
+						'options' => array(
+								array(
+										'key'=> "is_other_admin_mail",
+										'label'=> __("Enable this if you want remove admin email from reciever list.", 'multivendorx'),
+										'value'=> "is_other_admin_mail"
+								),
+						),
+						'database_value' => array(),
+					],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+					
+
+					[
 						'key'       => 'disable_cart_page_link',
 						'type'      => 'select',
 						'label'     => __( 'Redirect after Enquiry form Submission', 'multivendorx' ),
@@ -363,14 +449,7 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						'options' => $pages_array,
 						'database_value' => '',
 					],
-					[
-						'key'       => 'redirect_page_id',
-						'type'      => 'select',
-						'label'     => __( 'Set Redirect Page', 'multivendorx' ),
-						'desc'      => __( 'Select page where user will be redirected after successful enquiry.', 'multivendorx' ),
-						'options' => $pages_array,
-						'database_value' => '',
-					],
+					
 					[
 							'key'    => 'is_remove_price_free',
 							'label'   => __( "Remove Product Price?", 'multivendorx' ),

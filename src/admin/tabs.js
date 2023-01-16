@@ -56,7 +56,7 @@ export default class TabSection extends Component {
 			);
 		}) : '';
 		const TabUIContent = (
-			<div className={`mvx-general-wrapper mvx-${query_name_modified}`}>
+			<div className={`mvx-general-wrapper mvx-${this.props.subtab}`}>
 				{no_header ? '' : <HeaderSection />}
 				<div className="mvx-container">
 					<div
@@ -81,7 +81,7 @@ export default class TabSection extends Component {
 												<a href={m[1].link}>
 													{m[1].icon ? (
 														<i
-															className={`mvx-font ${m[1].icon}`}
+															className={`mvx-catalog ${m[1].icon}`}
 														></i>
 													) : (
 														''
@@ -94,8 +94,8 @@ export default class TabSection extends Component {
 												<Link
 
 													className={
-													query_name_modified ===
-													m[1].modulename
+													this.props.subtab ===
+													m[0]
 														? 'active-current-tab'
 														: ''
 												}
@@ -106,7 +106,7 @@ export default class TabSection extends Component {
 												>
 													{m[1].icon ? (
 														<i
-															className={`mvx-font ${m[1].icon}`}
+															className={`mvx-catalog ${m[1].icon}`}
 														></i>
 													) : (
 														''

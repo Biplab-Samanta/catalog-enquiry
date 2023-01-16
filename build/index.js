@@ -27872,7 +27872,7 @@ class TabSection extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
       }, m[1].tablabel), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, m[1].description)) : '';
     }) : '';
     const TabUIContent = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: `mvx-general-wrapper mvx-${query_name_modified}`
+      className: `mvx-general-wrapper mvx-${this.props.subtab}`
     }, no_header ? '' : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_header__WEBPACK_IMPORTED_MODULE_2__["default"], null), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mvx-container"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -27885,12 +27885,12 @@ class TabSection extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
       return m[1].link ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
         href: m[1].link
       }, m[1].icon ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-        className: `mvx-font ${m[1].icon}`
+        className: `mvx-catalog ${m[1].icon}`
       }) : '', m[1].tablabel) : (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_router_dom__WEBPACK_IMPORTED_MODULE_7__.Link, {
-        className: query_name_modified === m[1].modulename ? 'active-current-tab' : '',
+        className: this.props.subtab === m[0] ? 'active-current-tab' : '',
         to: `?page=catalog#&tab=${query_name}&subtab=${m[0]}`
       }, m[1].icon ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
-        className: `mvx-font ${m[1].icon}`
+        className: `mvx-catalog ${m[1].icon}`
       }) : '', m[1].tablabel);
     }) : ''), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "mvx-tab-content"
