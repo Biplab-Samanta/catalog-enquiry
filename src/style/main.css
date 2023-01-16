@@ -3682,6 +3682,25 @@ table.mvx-settings-table-wrap {
   border-radius: 0.25rem;
 }
 
+a.catalog-live-preview {
+  color: #df5d65 !important;
+  background-color: #f8dbdd !important;
+  font-weight: 500;
+}
+a.catalog-live-preview i {
+  color: #df5d65 !important;
+}
+
+a.catalog-upgrade {
+  color: #F9f8fb !important;
+  background: linear-gradient(110deg, #3f1473 0, #af3b74 50%, #db4b54 100%) !important;
+  line-height: 1.5;
+  font-weight: 500;
+}
+a.catalog-upgrade i {
+  color: #F9f8fb !important;
+}
+
 /*new css end here*/
 @media only screen and (min-width: 767px) {
   .mvx-container .mvx-left-container .mvx-text-center .mvx-money-table-holder .mvx-money-table-coloumn:first-child {
@@ -3755,7 +3774,7 @@ table.mvx-settings-table-wrap {
     width: 22%;
   }
   .mvx-container .mvx-vertical-tabs .mvx-middle-child-container .mvx-tab-content {
-    width: 78%;
+    width: 68%;
   }
   .mvx-compare-table-holder li.mvx-compare-table-row {
     width: 34%;

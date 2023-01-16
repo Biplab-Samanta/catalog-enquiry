@@ -2670,7 +2670,7 @@ export default class DynamicForm extends React.Component {
 			<div className="mvx-dynamic-fields-wrapper">
 				{this.state.errordisplay ? (
 					<div className="mvx-notic-display-title">
-						<i className="mvx-font icon-yes"></i>
+						<i className="mvx-font icon-button-appearance-tab"></i>
 						{this.state.errordisplay}
 					</div>
 				) : (

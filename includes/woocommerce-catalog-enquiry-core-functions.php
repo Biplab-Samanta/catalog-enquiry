@@ -258,9 +258,16 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 				'tablabel'        =>  __('General', 'multivendorx'),
 				'apiurl'          =>  'save_enquiry',
 				'description'     =>  __('General', 'multivendorx'),
-				'icon'            =>  'icon-button-appearance-tab',
+				'icon'            =>  'icon-general-tab',
 				'submenu'         =>  'settings',
 				'modulename'      =>  [
+					[
+	                    'key'       =>  'woocommerce_catalog_enquiry_general_settings',
+	                    'type'      =>  'blocktext',
+	                    'label'     =>  __( 'no_label', 'multivendorx' ),
+	                    'blocktext'      =>  __( "Common Settings", 'multivendorx' ),
+	                    'database_value' => '',
+	                ],
 					[
 						'key'    => 'is_enable',
 						'label'   => __( "Catalog Mode", 'multivendorx' ),
@@ -335,17 +342,17 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						'options' => array(
 								array(
 										'key'=> "is_hide_cart_checkout",
-										'label'=> __("Enable this to redirect user to home page, if they click on the cart or checkout page. To set the redirection to another page kindly upgrade to WooCommerce Catalog Enquiry Pro.", 'multivendorx'),
+										'label'=> apply_filters( 'woocommerce_catalog_enquiry_hide_cart', __('Enable this to redirect user to home page, if they click on the cart or checkout page. To set the redirection to another page kindly upgrade to <a href="https://multivendorx.com/product/woocommerce-catalog-enquiry-pro/" target="_blank">WooCommerce Catalog Enquiry Pro</a>.', 'woocommerce-catalog-enquiry') ),
 										'value'=> "is_hide_cart_checkout"
 								),
 						),
 						'database_value' => array(),
 					],
 					[
-						'key'       => 'redirect_page_id',
+						'key'       => 'disable_cart_page_link',
 						'type'      => 'select',
 						'label'     => __( 'Set Redirect Page', 'multivendorx' ),
-						'desc'      => __( 'Enable this to redirect user to home page, if they click on the cart or checkout page. To set the redirection to another page kindly upgrade to WooCommerce Catalog Enquiry Pro.', 'multivendorx' ),
+						'desc'      => __( 'Select page where user will be redirected for disable cart page.', 'multivendorx' ),
 						'options' => $pages_array,
 						'database_value' => '',
 					],
@@ -364,7 +371,7 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						'database_value' => array(),
 					],
 					[
-						'key'       => 'disable_cart_page_link',
+						'key'       => 'redirect_page_id',
 						'type'      => 'select',
 						'label'     => __( 'Set Redirect Page', 'multivendorx' ),
 						'desc'      => __( 'Select page where user will be redirected after successful enquiry.', 'multivendorx' ),
@@ -372,112 +379,60 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						'database_value' => '',
 					],
 
-
-
-
-
-
 					[
-							'key'    => 'is_remove_price_free',
-							'label'   => __( "Remove Product Price?", 'multivendorx' ),
-							'class'     => 'mvx-toggle-checkbox',
-							'type'    => 'checkbox',
-							'options' => array(
-									array(
-											'key'=> "is_remove_price_free",
-											'label'=> __("Enable this option to remove the product price display from site.", 'multivendorx'),
-											'value'=> "is_remove_price_free"
-									),
-							),
-							'database_value' => array(),
-					],
+	                    'key'       => 'separator1_content',
+	                    'type'      => 'section',
+	                    'label'     => "",
+                	],
+                	[
+	                    'key'       =>  'woocommerce_catalog_enquiry_display_settings',
+	                    'type'      =>  'blocktext',
+	                    'label'     =>  __( 'no_label', 'multivendorx' ),
+	                    'blocktext'      =>  __( "Display Options", 'multivendorx' ),
+	                    'database_value' => '',
+	                ],
 					[
-							'key'    => 'is_remove_price_free',
-							'label'   => __( "Disable Enquiry form via popup?", 'multivendorx' ),
-							'class'     => 'mvx-toggle-checkbox',
-							'type'    => 'checkbox',
-							'options' => array(
-									array(
-											'key'=> "is_remove_price_free",
-											'label'=> __("By default the form will be displayed via popup. Enable this, if you want to display the form below the product description.", 'multivendorx'),
-											'value'=> "is_remove_price_free"
-									),
-							),
-							'database_value' => array(),
-					],
-					[
-						'key'    => 'is_other_admin_mail',
-						'label'   => __( "Remove admin email", 'multivendorx' ),
+						'key'    => 'is_remove_price_free',
+						'label'   => __( "Remove Product Price?", 'multivendorx' ),
 						'class'     => 'mvx-toggle-checkbox',
 						'type'    => 'checkbox',
 						'options' => array(
 								array(
-										'key'=> "is_other_admin_mail",
-										'label'=> __("Enable this if you want remove admin email from reciever list.", 'multivendorx'),
-										'value'=> "is_other_admin_mail"
+										'key'=> "is_remove_price_free",
+										'label'=> __("Enable this option to remove the product price display from site.", 'multivendorx'),
+										'value'=> "is_remove_price_free"
+								),
+						),
+						'database_value' => array(),
+					],
+					[
+						'key'    => 'is_disable_popup',
+						'label'   => __( "Disable Enquiry form via popup?", 'multivendorx' ),
+						'class'     => 'mvx-toggle-checkbox',
+						'type'    => 'checkbox',
+						'options' => array(
+								array(
+										'key'=> "is_disable_popup",
+										'label'=> __("By default the form will be displayed via popup. Enable this, if you want to display the form below the product description.", 'multivendorx'),
+										'value'=> "is_disable_popup"
 								),
 						),
 						'database_value' => array(),
 					],
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-					
-					
-
 					[
-						'key'       => 'disable_cart_page_link',
-						'type'      => 'select',
-						'label'     => __( 'Redirect after Enquiry form Submission', 'multivendorx' ),
-						'desc'      => __( 'Enable this to redirect user to another page after successful enquiry submission.', 'multivendorx' ),
-						'options' => $pages_array,
-						'database_value' => '',
-					],
-					
-					[
-							'key'    => 'is_remove_price_free',
-							'label'   => __( "Remove Product Price?", 'multivendorx' ),
-							'class'     => 'mvx-toggle-checkbox',
-							'type'    => 'checkbox',
-							'options' => array(
-									array(
-											'key'=> "is_remove_price_free",
-											'label'=> __("Enable this option to remove the product price display from site.", 'multivendorx'),
-											'value'=> "is_remove_price_free"
-									),
-							),
-							'database_value' => array(),
-					],
-					[
-							'key'    => 'is_disable_popup',
-							'label'   => __( "Disable Enquiry form via popup?", 'multivendorx' ),
-							'class'     => 'mvx-toggle-checkbox',
-							'type'    => 'checkbox',
-							'options' => array(
-									array(
-											'key'=> "is_disable_popup",
-											'label'=> __("By default the form will be displayed via popup. Enable this, if you want to display the form below the product description.", 'multivendorx'),
-											'value'=> "is_disable_popup"
-									),
-							),
-							'database_value' => array(),
-					],
+	                    'key'       => 'separator2_content',
+	                    'type'      => 'section',
+	                    'label'     => "",
+	                ],
+	                [
+	                    'key'       =>  'woocommerce_catalog_enquiry_email_settings',
+	                    'type'      =>  'blocktext',
+	                    'label'     =>  __( 'no_label', 'multivendorx' ),
+	                    'blocktext'      =>  __( "Enquiry Email Receivers Settings", 'multivendorx' ),
+	                    'database_value' => '',
+	                ],
 					[
 		                'key'       => 'other_emails',
 		                'type'      => 'text',
@@ -499,15 +454,23 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 						),
 						'database_value' => array(),
 					],
+					
 				]
 			),
 			'button-appearance'   => array(
 				'tablabel'      =>  __('Button Appearance', 'multivendorx'),
 				'apiurl'        =>  'save_enquiry',
 				'description'   =>  __("Manage the appearance of your seller's dashboard.", 'multivendorx'),
-				'icon'          =>  'icon-tab-seller-dashbaord',
+				'icon'          =>  'icon-button-appearance-tab',
 				'submenu'       =>  'settings',
 				'modulename'    =>  [
+					[
+	                    'key'       =>  'woocommerce_catalog_enquiry_email_settings',
+	                    'type'      =>  'blocktext',
+	                    'label'     =>  __( 'no_label', 'multivendorx' ),
+	                    'blocktext'      =>  __( "Enquiry Email Receivers Settings", 'multivendorx' ),
+	                    'database_value' => '',
+	                ],
 					[
 		                'key'       => 'enquiry_button_text',
 		                'type'      => 'text',
@@ -566,7 +529,7 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 				'tablabel'      =>  __('Exclusion', 'multivendorx'),
 				'apiurl'        =>  'save_enquiry',
 				'description'   =>  __("Manage setting related to the sellers shop.", 'multivendorx'),
-				'icon'          =>  'icon-tab-store',
+				'icon'          =>  'icon-exclusion-tab',
 				'submenu'       =>  'settings',
 				'modulename'    =>  [
 					[
@@ -607,7 +570,7 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 				'tablabel'      =>  __('Enquiry Form', 'multivendorx'),
 				'apiurl'        =>  'save_enquiry',
 				'description'   =>  __("Select the type of product that best suits your marketplace.", 'multivendorx'),
-				'icon'          =>  'icon-tab-products',
+				'icon'          =>  'icon-enquiry-form-tab',
 				'submenu'       =>  'settings',
 				'modulename'    =>  [
 					[
@@ -718,12 +681,14 @@ if (!function_exists('mvx_catalog_admin_tabs')) {
 			),
 			'live-preview'  =>  array(
 					'tablabel'      =>  __('Live Preview', 'multivendorx'),
-					'icon'          =>  'icon-tab-products-capability',
+					'icon'          =>  'icon-live-preview-tab',
+					'class'			=>	'catalog-live-preview',
 					'link'          =>  'https://wc-marketplace.com/product/woocommerce-catalog-enquiry-pro/',
 			),
 			'upgrade' =>  array(
 					'tablabel'      =>  __('Upgrade To Pro For More Features', 'multivendorx'),
-					'icon'          =>  'icon-tab-social',
+					'icon'          =>  'icon-upgrade-to-pro-tab',
+					'class'			=>	'catalog-upgrade',
 					'link'          =>  'https://wc-marketplace.com/product/woocommerce-catalog-enquiry-pro/',
 			),
 		);

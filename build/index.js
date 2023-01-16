@@ -27618,7 +27618,7 @@ class DynamicForm extends (react__WEBPACK_IMPORTED_MODULE_2___default().Componen
     }, this.state.errordisplay ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("div", {
       className: "mvx-notic-display-title"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("i", {
-      className: "mvx-font icon-yes"
+      className: "mvx-font icon-button-appearance-tab"
     }), this.state.errordisplay) : '', (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createElement)("form", {
       className: "mvx-dynamic-form",
       onSubmit: e => {
@@ -27671,7 +27671,7 @@ class Banner extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
       className: "mvx-logo-right"
     }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
       className: "mvx-banner-description"
-    }, "With MultiendorX Pro You Get More Control Over Every Aspect of Your Marketplace", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "1.All Product Type Support", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "2.Instant Payment to Vendors", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "3.Create Vendor Membership Plans", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "4.Quick Real-Time Chat with Vendors", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "5.Hassle-free Billing Invoice and Packing Slip", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "6.Verify Vendors to Secure Marketplace", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "7.Seamless Product Import and Export", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "8.Advanced Sales and Tax Analytics", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "9.Inventory Tracker", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "10.Marketplace Vacation-Mode Upgrade to ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    }, "With MultiendorX Pro You Get More Control Over Every Aspect of Your Marketplace", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "1.All Product Type Support", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "2.Instant Payment to Vendors", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "3.Create Vendor Membership Plans", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), "4.Quick Real-Time Chat with Vendors Upgrade to ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
       href: "https://multivendorx.com/pricing/"
     }, "MultiVendorX Pro"), " Today!!"))));
   }
@@ -27748,8 +27748,7 @@ class Catalog_Backend_Endpoints_Load extends react__WEBPACK_IMPORTED_MODULE_1__.
         model: "catalog-settings",
         query_name: location.get('tab'),
         subtab: location.get('subtab'),
-        funtion_name: this,
-        horizontally: true
+        funtion_name: this
       });
     }
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, "sdfsd");
@@ -27883,6 +27882,7 @@ class TabSection extends react__WEBPACK_IMPORTED_MODULE_1__.Component {
       className: "mvx-current-tab-lists"
     }, Object.entries(model).length > 0 ? Object.entries(model).map((m, index) => {
       return m[1].link ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+        className: m[1].class,
         href: m[1].link
       }, m[1].icon ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("i", {
         className: `mvx-catalog ${m[1].icon}`

@@ -78,7 +78,7 @@ export default class TabSection extends Component {
 									{Object.entries(model).length > 0 ? Object.entries(model).map((m, index) => {
 										return m[1].link ? (
 											
-												<a href={m[1].link}>
+											<a className={m[1].class} href={m[1].link}>
 													{m[1].icon ? (
 														<i
 															className={`mvx-catalog ${m[1].icon}`}

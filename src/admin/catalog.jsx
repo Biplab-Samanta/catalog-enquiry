@@ -61,7 +61,6 @@ class Catalog_Backend_Endpoints_Load extends Component {
 				query_name={location.get('tab')}
 				subtab={location.get('subtab')}
 				funtion_name={this}
-				horizontally
 			/>;
 		}
 		return <div>sdfsd</div>;		
