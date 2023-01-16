@@ -344,7 +344,6 @@ div#wpbody-content {
      -moz-column-gap: 1.2rem;
           column-gap: 1.2rem;
   background-color: #f2eff5;
-  padding: 2rem 1.5rem;
   min-height: 54rem;
 }
 .mvx-container i {
@@ -1296,7 +1295,7 @@ div#wpbody-content {
 }
 .mvx-container .mvx-horizontal-tabs .mvx-tab-content {
   background: #f9f8fb;
-  padding: 2.5rem 1.5rem 6rem;
+  padding: 2.5rem 1.5rem 2.5rem;
   border: 0.063rem solid #d4d1d9;
   margin-top: -0.073rem;
   border-radius: 0rem 0.25rem 0.25rem 0.25rem;
@@ -3563,6 +3562,81 @@ div.health-check-accordion .health-check-accordion-panel table td {
   margin: 0 0 1rem;
 }
 
+/*add new css*/
+.mvx-sidebar .mvx-banner-top {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: left;
+  background-color: #f9f8fb;
+  background-size: 100% 100%;
+  border-radius: 0.25rem;
+  margin: 1.25rem 0;
+  border: 0.06rem solid #d4d1d9;
+}
+
+.mvx-settings-own-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+  gap: 2rem;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: reverse;
+      -ms-flex-direction: column-reverse;
+          flex-direction: column-reverse;
+  border: 0.063rem solid #d4d1d9;
+  border-radius: 0.125rem;
+  padding: 1rem;
+}
+
+.mvx-color-picker-wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.MuiTypography-root, .MuiFormLabel-root {
+  font-size: 0.875rem !important;
+}
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 0.25rem 2rem 0.25rem 0.5rem !important;
+}
+
+.MuiBox-root.css-ece9u5 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.563rem, 1fr));
+  gap: 2rem;
+}
+
+.css-187mznn-MuiSlider-root {
+  color: #4e1a74 !important;
+}
+
+.editor-left.side {
+  border: 0.06rem solid #d4d1d9;
+  border-radius: 0.25rem;
+  padding: 2rem;
+}
+
+table.mvx-settings-table-wrap {
+  width: 100%;
+  padding: 2rem;
+  text-align: left;
+  border: 0.06rem solid #d4d1d9;
+  border-radius: 0.25rem;
+}
+
+/*new css end here*/
 @media only screen and (min-width: 767px) {
   .mvx-container .mvx-left-container .mvx-text-center .mvx-money-table-holder .mvx-money-table-coloumn:first-child {
     border-right: 0;
@@ -3661,6 +3735,9 @@ div.health-check-accordion .health-check-accordion-panel table td {
   .mvx-container .mvx-left-container .mvx-slider-content-main-wrapper .mvx-dashboard-slider .mvx-dashboard-slider-cmp-wrap {
     position: relative;
   }
+  .editor-left.side {
+    padding: 1rem 0.5rem;
+  }
 }
 @media only screen and (max-width: 1024px) {
   .mvx-container {
@@ -3730,7 +3807,6 @@ div.health-check-accordion .health-check-accordion-panel table td {
     text-decoration: none;
   }
   .mvx-middle-child-container .mvx-current-tab-lists, .mvx-middle-child-container .mvx-tab-content {
-    width: 100%;
     margin-top: -0.06rem;
   }
   .mvx-middle-child-container .mvx-current-tab-lists .mvx-form-vendor-register .mvx-option-part .mvx-vendor-form-input-field-container ul li, .mvx-middle-child-container .mvx-tab-content .mvx-form-vendor-register .mvx-option-part .mvx-vendor-form-input-field-container ul li {
@@ -3861,78 +3937,4 @@ input.rs-picker-toggle-textbox {
 
 .sc-evZas.dFsTSm {
   overflow: visible;
-}
-
-/*add new css*/
-.mvx-sidebar .mvx-banner-top {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  text-align: left;
-  background-color: #f9f8fb;
-  background-size: 100% 100%;
-  border-radius: 0.25rem;
-  margin: 1.25rem 1.25rem 0;
-  border: 0.06rem solid #d4d1d9;
-}
-
-.mvx-settings-own-button {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
-  gap: 2rem;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: reverse;
-      -ms-flex-direction: column-reverse;
-          flex-direction: column-reverse;
-  border: 0.063rem solid #d4d1d9;
-  border-radius: 0.125rem;
-  padding: 1rem;
-}
-
-.mvx-color-picker-wrap {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
-.MuiTypography-root, .MuiFormLabel-root {
-  font-size: 0.875rem !important;
-}
-
-.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
-  padding: 0.25rem 2rem 0.25rem 0.5rem !important;
-}
-
-.MuiBox-root.css-ece9u5 {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(318px, 1fr));
-  gap: 2rem;
-}
-
-.css-187mznn-MuiSlider-root {
-  color: #4e1a74 !important;
-}
-
-.editor-left.side {
-  border: 0.06rem solid #d4d1d9;
-  border-radius: 0.25rem;
-  padding: 2rem;
-}
-
-table.mvx-settings-table-wrap {
-  width: 100%;
-  padding: 2rem;
-  text-align: left;
-  border: 0.06rem solid #d4d1d9;
-  border-radius: 0.25rem;
 }/*# sourceMappingURL=main.css.map */

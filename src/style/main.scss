@@ -541,7 +541,7 @@ div#wpbody-content {
   @include flexprops(start);
   column-gap:1.2rem;
   background-color: $base-color;
-  padding: 2rem 1.5rem;
+  // padding: 2rem 1.5rem;
   min-height: 54rem;
   i {
     padding-right: 0.5rem;
@@ -1237,7 +1237,7 @@ hr{
     }
     & .mvx-tab-content {
       background: $font-white;
-      padding: 2.5rem 1.5rem 6rem;
+      padding: 2.5rem 1.5rem 2.5rem;
       border: $border;
       margin-top: -.073rem;
       border-radius: 0rem 0.25rem 0.25rem 0.25rem;
@@ -2999,7 +2999,63 @@ padding:0;
       margin: 0 0 1rem;
     }
   }
-  
+  /*add new css*/
+.mvx-sidebar{
+  .mvx-banner-top{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem ;
+    text-align: left;
+    background-color: #f9f8fb;
+    background-size: 100% 100%;
+    border-radius: 0.25rem;
+    margin: 1.25rem 0;
+    border: 0.06rem solid $boder-color;
+  }
+}
+.mvx-settings-own-button {
+  display: flex;
+  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
+  gap: 2rem;
+  flex-direction: column-reverse;
+  border:  $border;
+  border-radius: 0.125rem;
+  padding: 1rem;
+}
+.mvx-color-picker-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.MuiTypography-root, .MuiFormLabel-root{
+  font-size: 0.875rem !important;
+}
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+  padding: 0.25rem 2rem 0.25rem 0.5rem !important;
+}
+.MuiBox-root.css-ece9u5 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.563rem, 1fr));
+  gap: 2rem;
+}
+.css-187mznn-MuiSlider-root{
+  color: #4e1a74 !important;
+}
+.editor-left.side {
+  border: 0.06rem solid $boder-color;
+  border-radius: 0.25rem;
+  padding: 2rem;
+}
+.MuiBox-root.css-0 {
+}
+table.mvx-settings-table-wrap {
+  width: 100%;
+  padding: 2rem;
+  text-align: left;
+  border: 0.06rem solid #d4d1d9;
+  border-radius: 0.25rem;
+}
+/*new css end here*/
 //responsive code are here
 @media only screen and (min-width: 767px) {
 .mvx-container .mvx-left-container .mvx-text-center .mvx-money-table-holder .mvx-money-table-coloumn{
@@ -3082,7 +3138,8 @@ li.mvx-compare-table-row{
   width: 34%;
   max-width: 30rem;
   padding:2rem;
-}}}
+}}
+}
 @media only screen and (max-width: 375px) {
   .mvx-container .mvx-btn {
     position: absolute;
@@ -3101,6 +3158,9 @@ li.mvx-compare-table-row{
   .mvx-container .mvx-left-container .mvx-slider-content-main-wrapper .mvx-dashboard-slider .mvx-dashboard-slider-cmp-wrap {
     position: relative;
 } 
+.editor-left.side {
+  padding: 1rem 0.5rem;
+}
 }
 @media only screen and (max-width: 1024px) {
   .mvx-container{
@@ -3167,7 +3227,7 @@ li.mvx-compare-table-row{
 }
  .mvx-middle-child-container{
     .mvx-current-tab-lists, .mvx-tab-content{
-      width: 100%;
+      // width: 100%;
       margin-top: -0.06rem;
       .mvx-form-vendor-register .mvx-option-part .mvx-vendor-form-input-field-container ul li{
         flex-wrap: wrap;
@@ -3284,60 +3344,4 @@ input.rs-picker-toggle-textbox {
 }
 .sc-evZas.dFsTSm {
   overflow: visible;
-}
-/*add new css*/
-.mvx-sidebar{
-  .mvx-banner-top{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 2rem ;
-    text-align: left;
-    background-color: #f9f8fb;
-    background-size: 100% 100%;
-    border-radius: 0.25rem;
-    margin: 1.25rem 1.25rem 0;
-    border: 0.06rem solid $boder-color;
-  }
-}
-.mvx-settings-own-button {
-  display: flex;
-  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
-  gap: 2rem;
-  flex-direction: column-reverse;
-  border:  $border;
-  border-radius: 0.125rem;
-  padding: 1rem;
-}
-.mvx-color-picker-wrap {
-  display: flex;
-  justify-content: space-between;
-}
-.MuiTypography-root, .MuiFormLabel-root{
-  font-size: 0.875rem !important;
-}
-.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
-  padding: 0.25rem 2rem 0.25rem 0.5rem !important;
-}
-.MuiBox-root.css-ece9u5 {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(318px, 1fr));
-  gap: 2rem;
-}
-.css-187mznn-MuiSlider-root{
-  color: #4e1a74 !important;
-}
-.editor-left.side {
-  border: 0.06rem solid $boder-color;
-  border-radius: 0.25rem;
-  padding: 2rem;
-}
-.MuiBox-root.css-0 {
-}
-table.mvx-settings-table-wrap {
-  width: 100%;
-  padding: 2rem;
-  text-align: left;
-  border: 0.06rem solid #d4d1d9;
-  border-radius: 0.25rem;
 }
