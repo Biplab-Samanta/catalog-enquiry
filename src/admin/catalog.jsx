@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import MvxTab from './tabs';
+import Banner7 from '../../../woocommerce-catalog-enquiry-pro/src/index';
 
 class Catalog_Backend_Endpoints_Load extends Component {
 	constructor(props) {
@@ -62,6 +63,11 @@ class Catalog_Backend_Endpoints_Load extends Component {
 				subtab={location.get('subtab')}
 				funtion_name={this}
 			/>;
+		} else if (
+			location.get('tab') &&
+			location.get('tab') === 'customer'
+		) {
+			return <Banner7 query_name={location.get('tab')} />;
 		}
 		return <div>sdfsd</div>;		
 	}

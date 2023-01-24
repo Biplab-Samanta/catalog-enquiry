@@ -23,17 +23,12 @@ if(!Woocommerce_Catalog_Enquiry_Dependencies::woocommerce_active_check()) {
   add_action( 'admin_notices', 'woocommerce_catalog_enquiry_alert_notice' );
 }
 
-// Migration at activation hook
-register_activation_hook(__FILE__, 'woocommerce_catalog_enquiry_option_migration_3_to_4');
-// Update time migration
-add_action( 'upgrader_process_complete', 'woocommerce_catalog_enquiry_option_migration_3_to_4' );
-
 /**
 * Plugin page links
 */
 function woocommerce_catalog_enquiry_plugin_links( $links ) {	
 	$plugin_links = array(
-		'<a href="' . admin_url( 'admin.php?page=woo-catalog' ) . '">' . __( 'Settings', WOOCOMMERCE_CATALOG_ENQUIRY_TEXT_DOMAIN ) . '</a>',
+		'<a href="' . admin_url( 'admin.php?page=catalog#&tab=settings&subtab=general' ) . '">' . __( 'Settings', WOOCOMMERCE_CATALOG_ENQUIRY_TEXT_DOMAIN ) . '</a>',
 		'<a href="https://multivendorx.com/support-forum/forum/wcmp-catalog-enquiry/">' . __( 'Support', WOOCOMMERCE_CATALOG_ENQUIRY_TEXT_DOMAIN ) . '</a>',			
 	);	
 	$links = array_merge( $plugin_links, $links );

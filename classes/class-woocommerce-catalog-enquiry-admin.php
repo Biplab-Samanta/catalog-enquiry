@@ -5,10 +5,6 @@ class Woocommerce_Catalog_Enquiry_Admin {
     public $settings;
 
     public function __construct() {
-        //admin script and style
-        add_action('admin_enqueue_scripts', array(&$this, 'enqueue_admin_script'));
-        add_action('woocommerce_catalog_enquiry_admin_footer', array(&$this, 'woocommerce_catalog_enquiry_admin_footer'));
-
         $this->load_class('settings');
         $this->settings = new Woocommerce_Catalog_Enquiry_Settings();
         $this->init_product_settings();
@@ -21,24 +17,12 @@ class Woocommerce_Catalog_Enquiry_Admin {
         } // End If Statement
     }
 
-    // End load_class()
-
-    public function woocommerce_catalog_enquiry_admin_footer() {
-        global $Woocommerce_Catalog_Enquiry;
-        ?>
-        <div style="clear: both"></div>
-        <div id="woocommerce-catalog-admin-footer">
-        <?php esc_html_e('Powered by', 'woocommerce-catalog-enquiry'); ?> <a href="http://multivendorx.com/" target="_blank"><img src="<?php echo $Woocommerce_Catalog_Enquiry->plugin_url . '/assets/images/mvx.svg'; ?>"></a><?php esc_html_e('MultiVendorX', 'woocommerce-catalog-enquiry'); ?> &copy; <?php echo date('Y'); ?>
-        </div>
-        <?php
-    }
-
     public function init_product_settings() {
         global $Woocommerce_Catalog_Enquiry;
         $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
         $options_button_appearence_settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable") {
-            if (isset($options_button_appearence_settings['button_type']) && $options_button_appearence_settings['button_type'] == 3) {
+        if (isset($settings['is_enable']) && mvx_catalog_get_settings_value($settings['is_enable'], 'checkbox') == "Enable") {
+            if (isset($options_button_appearence_settings['button_type']) && mvx_catalog_get_settings_value($options_button_appearence_settings['button_type'], 'select') == 3) {
                 add_filter('woocommerce_product_data_tabs', array($this, 'catalog_product_data_tabs'), 99);
                 add_action('woocommerce_product_data_panels', array($this, 'catalog_product_data_panel'));
                 add_action('woocommerce_process_product_meta_simple', array($this, 'save_catalog_data'));
@@ -68,8 +52,6 @@ class Woocommerce_Catalog_Enquiry_Admin {
      * @param int $post_id ID of the post being saved.
      */
     public function save_catalog_data($post_id) {
-
-        // Save all meta
         update_post_meta($post_id, 'woocommerce_catalog_enquiry_product_link', esc_url($_POST['woocommerce_catalog_enquiry_product_link']));
     }
 
@@ -81,7 +63,6 @@ class Woocommerce_Catalog_Enquiry_Admin {
      * @since 1.0.0
      */
     public function catalog_product_data_panel() {
-        global $Woocommerce_Catalog_Enquiry;
         ?><div id="woocommerce-catalog-enquiry-product-data" class="panel woocommerce_options_panel"><?php
         woocommerce_wp_text_input(array(
             'id' => 'woocommerce_catalog_enquiry_product_link',
@@ -89,46 +70,6 @@ class Woocommerce_Catalog_Enquiry_Admin {
             'placeholder' => __('https://www.google.com', 'woocommerce-catalog-enquiry')
         ));
         ?></div><?php
-        }
-
-        /**
-         * Admin Scripts
-         */
-        public function enqueue_admin_script() {
-            global $Woocommerce_Catalog_Enquiry;
-            $screen = get_current_screen();
-
-            $settings_buttons = get_option( 'woocommerce_catalog_enquiry_button_appearence_settings' );
-            // Enqueue admin script and stylesheet from here
-            if ($screen && $screen->id == 'toplevel_page_woo-catalog' ) :
-
-                $Woocommerce_Catalog_Enquiry->library->load_qtip_lib();
-                $Woocommerce_Catalog_Enquiry->library->load_select2_lib();
-                $Woocommerce_Catalog_Enquiry->library->load_upload_lib();
-                $Woocommerce_Catalog_Enquiry->library->load_colorpicker_lib();
-                $Woocommerce_Catalog_Enquiry->library->load_datepicker_lib();
-
-                wp_enqueue_style( 'wp-color-picker' );
-                wp_enqueue_script('catalog_admin_js', $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/admin/js/admin.js', array('jquery'), $Woocommerce_Catalog_Enquiry->version, true);
-                wp_enqueue_style('catalog_admin_css', $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/admin/css/admin.css', array(), $Woocommerce_Catalog_Enquiry->version);
-
-                // Colorpicker css
-                wp_enqueue_style('button_color_picker_css', $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/admin/css/colorpicker_btn.css', array(), $Woocommerce_Catalog_Enquiry->version);
-                // Colorpicker js
-                wp_enqueue_script('button_color_picker_js', $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/admin/js/colorpicker_btn.js', array('jquery'), $Woocommerce_Catalog_Enquiry->version, true);
-                // Button js
-                wp_enqueue_script('button_gen_js', $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/admin/js/button_gen.js', array('jquery'), $Woocommerce_Catalog_Enquiry->version, true);
-
-                wp_localize_script(
-                'button_gen_js', 
-                'mvx_catalog_btn', 
-                array(
-                    'custom_css' => isset($settings_buttons['custom_enquiry_buttons_css']) ? $settings_buttons['custom_enquiry_buttons_css'] : '',  
-                    'custom_cssStuff' => isset($settings_buttons['custom_enquiry_buttons_cssStuff']) ? $settings_buttons['custom_enquiry_buttons_cssStuff'] : '',
-                    'custom_cssValues' => isset($settings_buttons['custom_enquiry_buttons_cssValues']) ? $settings_buttons['custom_enquiry_buttons_cssValues'] : '',    
-                    ));
-
-            endif;
         }
     }
 

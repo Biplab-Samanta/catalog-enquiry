@@ -3613,24 +3613,28 @@ div.health-check-accordion .health-check-accordion-panel table td {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
   gap: 1rem;
   padding: 2rem;
   text-align: left;
-  background-color: #f9f8fb;
+  background-color: #fdfdfe;
   background-size: 100% 100%;
   border-radius: 0.25rem;
   margin: 1.25rem 0;
   border: 0.06rem solid #d4d1d9;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 
 .mvx-settings-own-button {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  /* grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); */
   gap: 2rem;
   -webkit-box-orient: vertical;
   -webkit-box-direction: reverse;
@@ -4007,4 +4011,79 @@ input.rs-picker-toggle-textbox {
 
 .sc-evZas.dFsTSm {
   overflow: visible;
+}
+
+a:has(#upgrade-to-pro) {
+  background: #fdfdfe;
+  background-image: linear-gradient(-28deg, #db4b54, #af3b74, #3f1473);
+}
+a:has(#upgrade-to-pro):hover {
+  background-image: linear-gradient(110deg, #db4b54, #af3b74, #3f1473) !important;
+  color: rgba(114, 174, 230, 0) !important;
+}
+
+div#upgrade-to-pro {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #f9f8fb;
+}
+div#upgrade-to-pro i.mvx-catalog.icon-upgrade-to-pro-tab {
+  color: #f9f8fb;
+}
+
+a.mvx-btn.btn-red {
+  background-color: #e35047;
+  color: #f9f8fb;
+  border: 0.06rem solid #e35047;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  border-radius: 0.25rem;
+  padding: 0.594rem 1rem;
+  cursor: pointer;
+  vertical-align: middle;
+  white-space: nowrap;
+  display: inline-block;
+}
+a.mvx-btn.btn-red:hover {
+  background-color: #e6635b;
+  color: #f9f8fb;
+}
+a.mvx-btn.btn-red:hover {
+  text-decoration: none;
+}
+
+.mvx-banner-top .mvx-pro-txt {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 1rem;
+}
+.mvx-banner-top .mvx-pro-txt .mvx-pro-txt-items h3 {
+  margin: 0;
+}
+.mvx-banner-top .mvx-pro-txt .mvx-pro-txt-items p {
+  margin: 0.5rem 0 1.25rem;
+}
+.mvx-banner-top .mvx-dashboard-top-icon {
+  font-size: 1.5rem;
+  background: #9f8ab9;
+  border-radius: 0.25rem;
+  color: #f9f8fb;
+  padding: 0.9rem;
+  height: 2rem;
+  line-height: 2rem;
+  width: 2rem;
+}
+.mvx-banner-top .message-banner-sliding {
+  border: 0.06rem solid #181718;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin-left: auto;
 }/*# sourceMappingURL=main.css.map */

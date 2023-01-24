@@ -42,13 +42,13 @@ class Woocommerce_Catalog_Enquiry {
 		$this->text_domain = WOOCOMMERCE_CATALOG_ENQUIRY_TEXT_DOMAIN;
 		$this->version = WOOCOMMERCE_CATALOG_ENQUIRY_PLUGIN_VERSION;
 		// default general setting
-		$this->options_general_settings = get_option('woocommerce_catalog_enquiry_general_settings');	
+		$this->options_general_settings = get_option('mvx_catalog_general_tab_settings');	
 		// from_setting
-		$this->options_form_settings = get_option('woocommerce_catalog_enquiry_from_settings');
+		$this->options_form_settings = get_option('mvx_catalog_enquiry_form_tab_settings');
 		// exclusion setting
-		$this->options_exclusion_settings = get_option('woocommerce_catalog_enquiry_exclusion_settings');
+		$this->options_exclusion_settings = get_option('mvx_catalog_exclusion_tab_settings');
 		// button appearence
-		$this->options_button_appearence_settings = get_option('woocommerce_catalog_enquiry_button_appearence_settings');
+		$this->options_button_appearence_settings = get_option('mvx_catalog_button_appearance_tab_settings');
 		add_action('init', array(&$this, 'init'), 0);
 		// Catalog Email setup
 		add_filter('woocommerce_email_classes', array(&$this, 'woocommerce_catalog_enquiry_email_setup' ));
@@ -62,10 +62,6 @@ class Woocommerce_Catalog_Enquiry {
 		
 		// Init Text Domain
 		$this->load_plugin_textdomain();
-		
-		// Init library
-		$this->load_class('library');
-		$this->library = new Woocommerce_Catalog_Enquiry_Library();
 
 		// Init ajax
 		if(defined('DOING_AJAX')) {

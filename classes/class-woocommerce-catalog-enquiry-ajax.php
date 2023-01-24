@@ -10,10 +10,10 @@ class Woocommerce_Catalog_Enquiry_Ajax {
 	}
 	
 	public function add_variation_for_enquiry_mail() {
-        $product_id = (int)$_POST['product_id'];
+        $product_id = isset($_POST['product_id']) ? (int) $_POST['product_id'] : 0;
         if ($product_id) {
 			if ( get_transient('variation_list') ) delete_transient('variation_list');
-			$variation_data = $_POST['variation_data'];
+			$variation_data = isset($_POST['variation_data']) ? $_POST['variation_data'] : '';
 			set_transient('variation_list', $variation_data, 30 * MINUTE_IN_SECONDS);
         }	
         die;
@@ -43,18 +43,24 @@ class Woocommerce_Catalog_Enquiry_Ajax {
     		die();
     	}
     	$status = $file_name = $target_file = '';
-		$attachments = array();
+		$attachments = $enquiry_form_fileds = [];
 		$settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-		$settings_gen = $Woocommerce_Catalog_Enquiry->options_form_settings;
+		$settings_form = $Woocommerce_Catalog_Enquiry->options_form_settings;
 		
+        if (isset($settings_form['enquiry_form_fileds']) && !empty($settings_form['enquiry_form_fileds'])) {
+            foreach ($settings_form['enquiry_form_fileds'] as $key_e => $value_e) {
+                $enquiry_form_fileds[$value_e[0]] = $value_e[1];
+            }
+        }
+
 		if (isset($_FILES['fileupload'])) {
 
 			foreach ($_FILES['fileupload'] as $key => $value) {
 		        $_FILES['fileupload'][$key] = $value[0]; 
 		    }
 		    $woocommerce_customer_filesize = 2097152;
-		    if (isset($settings_gen['filesize_limit']) && !empty($settings_gen['filesize_limit'])) {
-		    	$woocommerce_customer_filesize = intval($settings_gen['filesize_limit'])*1024*1024;
+		    if (!empty($enquiry_form_fileds) && array_key_exists('filesize-limit_checkbox', $enquiry_form_fileds) && array_key_exists('filesize-limit', $enquiry_form_fileds)) {
+		    	$woocommerce_customer_filesize = intval($enquiry_form_fileds['filesize-limit']) * 1024 * 1024;
 		    }
 		    
 		    if (in_array($_FILES['fileupload']['type'], wp_get_mime_types())) {
@@ -65,11 +71,11 @@ class Woocommerce_Catalog_Enquiry_Ajax {
 				    if (move_uploaded_file($_FILES['fileupload']['tmp_name'], $target_file)) {
 				    	$attachments[] = $target_file;
 				    }
-				}else{
+				} else {
 					$status = 3;
 		    		die;
 				}
-		    }else{
+		    } else {
 		    	$status = 2;
 		    	die;
 		    }
@@ -77,7 +83,7 @@ class Woocommerce_Catalog_Enquiry_Ajax {
 
 		$name = sanitize_text_field($_POST['woocommerce_customer_name']);
 		$email = sanitize_email($_POST['woocommerce_customer_email']);
-		$product_id = (int)$_POST['woocommerce_customer_product_id'];
+		$product_id = (int) $_POST['woocommerce_customer_product_id'];
 		$subject = sanitize_text_field($_POST['woocommerce_customer_subject']);
 		$phone = sanitize_text_field($_POST['woocommerce_customer_phone']);
 		$comment = sanitize_text_field($_POST['woocommerce_customer_comment']);
@@ -85,9 +91,9 @@ class Woocommerce_Catalog_Enquiry_Ajax {
 		$product_name = sanitize_text_field($_POST['woocommerce_customer_product_name']);
 		$product_url = esc_url($_POST['woocommerce_customer_product_url']);
 		$enquiry_product_type = sanitize_text_field($_POST['enquiry_product_type']);
-                $product_variations = (get_transient('variation_list')) ? get_transient('variation_list') : array();
+        $product_variations = (get_transient('variation_list')) ? get_transient('variation_list') : array();
                 
-		if (isset($settings['is_other_admin_mail']) && $settings['is_other_admin_mail'] == 'Enable') {
+		if (isset($settings['is_other_admin_mail']) && mvx_catalog_get_settings_value($settings['is_other_admin_mail'], 'checkbox') == 'Enable') {
 			$email_admin = '';
 		} else {
 			$email_admin = get_option( 'admin_email' );
@@ -133,7 +139,7 @@ class Woocommerce_Catalog_Enquiry_Ajax {
 					unlink($target_file); 
 				$status = 0;
 			}
-		}else{
+		} else {
 			// delete uploaded file from server temp if have
 			if ($target_file)
 				unlink($target_file); 

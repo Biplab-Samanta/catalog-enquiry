@@ -3,12 +3,17 @@
 class Woocommerce_Catalog_Enquiry_Frontend {
 
     public $available_for;
+    public $settings = '';
+    public $settings_button = '';
+    public $settings_form = '';
+    public $exclusion = '';
 
     public function __construct() {
         global $Woocommerce_Catalog_Enquiry;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $options_button_appearence_settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
+        $this->settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
+        $this->settings_button = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
+        $this->settings_form = $Woocommerce_Catalog_Enquiry->options_form_settings;
+        $this->exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
         //enqueue scripts
         add_action('wp_enqueue_scripts', array($this, 'frontend_scripts'));
         //enqueue styles
@@ -18,10 +23,9 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $current_user = wp_get_current_user();
         $user_id = $current_user->ID;
         $this->available_for = '';
-
-        if (isset($exclusion['woocommerce_userroles_list'])) {
-            if (is_array($exclusion['woocommerce_userroles_list'])) {
-                foreach ($exclusion['woocommerce_userroles_list'] as $user_list_key) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect'))) {
+                foreach (mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect') as $user_list_key) {
                     $user_role_list[] = array_key_exists( $user_list_key, array_keys( wp_roles()->roles ) ) ? array_keys( wp_roles()->roles )[$user_list_key] : '';
                 }
                 if ( !empty( $current_user->roles ) && in_array($current_user->roles[0], $user_role_list ) ) {
@@ -29,16 +33,16 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                 }
             }
         }
-        if (isset($exclusion['woocommerce_user_list'])) {
-            if (is_array($exclusion['woocommerce_user_list'])) {
-                if (in_array($current_user->ID, $exclusion['woocommerce_user_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect'))) {
+                if (in_array($current_user->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect'))) {
                     $this->available_for = $current_user->ID;
                 }
             }
         }
         
 
-        $for_user_type = isset($settings['for_user_type']) ? $settings['for_user_type'] : '';
+        $for_user_type = isset($this->settings['for_user_type']) ? mvx_catalog_get_settings_value($this->settings['for_user_type'], 'select') : '';
         if ($for_user_type == 0 || $for_user_type == 3 || $for_user_type == '') {
             $this->init_catalog();
         } else if ($for_user_type == 1) {
@@ -51,8 +55,8 @@ class Woocommerce_Catalog_Enquiry_Frontend {
             }
         }
 
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable" && ($this->available_for == '' || $this->available_for == 0)) {
-            if (isset($options_button_appearence_settings['button_type'])) {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable" && ($this->available_for == '' || $this->available_for == 0)) {
+            if (isset($this->settings_button['button_type'])) {
                 add_filter('woocommerce_loop_add_to_cart_link', array($this, 'woocommerce_loop_add_to_cart_link'), 99, 3);
             }
         }
@@ -62,7 +66,6 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function redirect_cart_checkout_on_conditions() {
         global $Woocommerce_Catalog_Enquiry, $post;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
         $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
         $current_user = wp_get_current_user();
         $user_id = $current_user->ID;
@@ -70,17 +73,17 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $count1 = 0;
         $count2 = 0;
 
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable") {
-            if (isset($settings['is_hide_cart_checkout']) && $settings['is_hide_cart_checkout'] == "Enable") {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable") {
+            if (isset($this->settings['is_hide_cart_checkout']) && mvx_catalog_get_settings_value($this->settings['is_hide_cart_checkout'], 'checkbox') == "Enable") {
 
-                if (isset($exclusion['woocommerce_userroles_list'])) {
-                    if (is_array($exclusion['woocommerce_userroles_list'])) {
-                        $count1 = count($exclusion['woocommerce_userroles_list']);
+                if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect')) {
+                    if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect'))) {
+                        $count1 = count(mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect'));
                     }
                 }
-                if (isset($exclusion['woocommerce_user_list'])) {
-                    if (is_array($exclusion['woocommerce_user_list'])) {
-                        $count2 = count($exclusion['woocommerce_user_list']);
+                if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect')) {
+                    if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect'))) {
+                        $count2 = count(mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect'));
                     }
                 }
                     
@@ -95,13 +98,13 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                         exit;
                     }
                 } else {
-                    if ( isset($exclusion['woocommerce_userroles_list'] ) && !in_array($current_user->roles[0], $exclusion['woocommerce_userroles_list'] )) {
+                    if ( mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect')  && !in_array($current_user->roles[0], mvx_catalog_get_settings_value($this->exclusion['woocommerce_userroles_list'], 'multiselect') ) ) {
                         if (is_page((int) $cart_page_id) || is_page($checkout_page_id)) {
                             wp_redirect($home_url_link);
                             exit;
                         }
                     }
-                    if (isset($exclusion['woocommerce_user_list'] ) && !in_array($current_user->ID, $exclusion['woocommerce_user_list'])) {
+                    if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect') && !in_array($current_user->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_user_list'], 'multiselect'))) {
                         if (is_page((int) $cart_page_id) || is_page($checkout_page_id)) {
                             wp_redirect($home_url_link);
                             exit;
@@ -116,21 +119,20 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         global $Woocommerce_Catalog_Enquiry;
         $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
         // button option
-        $options_button_appearence_settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
 
         $labels = __('Add to cart', 'woocommerce-catalog-enquiry');
         $link_add_to_cart = $product ? get_permalink($product->get_id()) : '';
 
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable") {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable") {
             $pro_link = '';
-            if (isset($options_button_appearence_settings['button_type'])) {
-                switch ($options_button_appearence_settings['button_type']) {
+            if (isset($this->settings_button['button_type'])) {
+                switch ($this->settings_button['button_type']) {
                     case 2:
-                        $link = isset($options_button_appearence_settings['button_link']) && !empty($options_button_appearence_settings['button_link']) ? $options_button_appearence_settings['button_link'] : '#';
-                        $label = isset($options_button_appearence_settings['enquiry_button_text']) && !empty($options_button_appearence_settings['enquiry_button_text']) ? $options_button_appearence_settings['enquiry_button_text'] : $product->add_to_cart_text();
+                        $link = isset($this->settings_button['button_link']) && !empty($this->settings_button['button_link']) ? $this->settings_button['button_link'] : '#';
+                        $label = isset($this->settings_button['enquiry_button_text']) && !empty($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : $product->add_to_cart_text();
                         $classes = implode( ' ', array('button','product_type_' . $product->get_type()));
                         
-                        if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+                        if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                             if (!$product->managing_stock() && !$product->is_in_stock()) {
                                 $pro_link = sprintf( '<a id="%s" href="%s" data-quantity="%s" class="%s" %s>%s</a>',
                                     esc_attr('woocommerce-catalog-enquiry-custom-button'),
@@ -166,10 +168,10 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                     case 3:
                         $product_link = get_post_meta($product->get_id(), 'woocommerce_catalog_enquiry_product_link', true);
                         $link = !empty($product_link) ? $product_link : '#';
-                        $label = isset($options_button_appearence_settings['enquiry_button_text']) && !empty($options_button_appearence_settings['enquiry_button_text']) ? $options_button_appearence_settings['enquiry_button_text'] : $product->add_to_cart_text();
+                        $label = isset($this->settings_button['enquiry_button_text']) && !empty($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : $product->add_to_cart_text();
                         $classes = implode( ' ', array('button','product_type_' . $product->get_type()));
                        
-                        if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+                        if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                             if (!$product->managing_stock() && !$product->is_in_stock()) {
                                 $pro_link = sprintf( '<a id="%s" href="%s" data-quantity="%s" class="%s" %s>%s</a>',
                                     esc_attr('woocommerce-catalog-enquiry-custom-button'),
@@ -203,9 +205,9 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                     
                     case 4:
                         $link = '#';
-                        $label = isset($options_button_appearence_settings['enquiry_button_text']) && !empty($options_button_appearence_settings['enquiry_button_text']) ? $options_button_appearence_settings['enquiry_button_text'] : $product->add_to_cart_text();
+                        $label = isset($this->settings_button['enquiry_button_text']) && !empty($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : $product->add_to_cart_text();
                         $classes = implode( ' ', array('button','product_type_' . $product->get_type()));
-                        if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+                        if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                             if (!$product->managing_stock() && !$product->is_in_stock()) {
                                 $pro_link = sprintf( '<a id="%s" href="%s" data-quantity="%s" class="%s" %s>%s</a>',
                                     esc_attr('woocommerce-catalog-enquiry-custom-button'),
@@ -239,9 +241,9 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
                     default:
                         $link = get_permalink($product->get_id());
-                        $label = isset($options_button_appearence_settings['enquiry_button_text']) && !empty($options_button_appearence_settings['enquiry_button_text']) ? $options_button_appearence_settings['enquiry_button_text'] : __('Read More', 'woocommerce-catalog-enquiry');
+                        $label = isset($this->settings_button['enquiry_button_text']) && !empty($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : __('Read More', 'woocommerce-catalog-enquiry');
                         $classes = implode( ' ', array('button','product_type_' . $product->get_type()));
-                        if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+                        if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                             if (!$product->managing_stock() && !$product->is_in_stock()) {
                                 $pro_link = sprintf( '<a id="%s" href="%s" data-quantity="%s" class="%s" %s>%s</a>',
                                     esc_attr('woocommerce-catalog-enquiry-custom-button'),
@@ -274,7 +276,7 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                         break;
                 }
             }
-            return apply_filters('woocommerce_catalog_enquiry_custom_product_link', $pro_link, $product, $settings, $options_button_appearence_settings);
+            return apply_filters('woocommerce_catalog_enquiry_custom_product_link', $pro_link, $product, $this->settings, $this->settings_button);
         } else {
             return $add_to_cart_button;
         }
@@ -283,29 +285,26 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function init_catalog() {
         global $Woocommerce_Catalog_Enquiry;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
 
-
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable" && ($this->available_for == '' || $this->available_for == 0) && apply_filters( 'woocommerce_catalog_enquiry_free_active', true )) {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable" && ($this->available_for == '' || $this->available_for == 0) && apply_filters( 'woocommerce_catalog_enquiry_free_active', true )) {
             add_action('init', array($this, 'remove_add_to_cart_button'));
-            if (isset($settings['is_enable_enquiry']) && $settings['is_enable_enquiry'] == "Enable") {
+            if (isset($this->settings['is_enable_enquiry']) && mvx_catalog_get_settings_value($this->settings['is_enable_enquiry'], 'checkbox') == "Enable") {
                 $piority = apply_filters('woocommerce_catalog_enquiry_button_possition_piority', 100);
-                if (isset($settings['is_disable_popup']) && $settings['is_disable_popup'] == "Enable") {
+                if (isset($this->settings['is_disable_popup']) && mvx_catalog_get_settings_value($this->settings['is_disable_popup'], 'checkbox') == "Enable") {
                     add_action('woocommerce_single_product_summary', array($this, 'add_form_for_enquiry_without_popup'), $piority);
                 } else {
                     add_action('woocommerce_single_product_summary', array($this, 'add_form_for_enquiry'), $piority);
                 }
             }
-            if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+            if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                 $piority = apply_filters('woocommerce_catalog_enquiry_button_possition_piority', 100);
-                if (isset($settings['is_disable_popup']) && $settings['is_disable_popup'] == "Enable") {
+                if (isset($this->settings['is_disable_popup']) && mvx_catalog_get_settings_value($this->settings['is_disable_popup'], 'checkbox') == "Enable") {
                     add_action('woocommerce_single_product_summary', array($this, 'add_form_for_enquiry_without_popup'), $piority);
                 } else {
                     add_action('woocommerce_single_product_summary', array($this, 'add_form_for_enquiry'), $piority);
                 }
             }
-            if (isset($settings['is_remove_price_free']) && $settings['is_remove_price_free'] == "Enable") {
+            if (isset($this->settings['is_remove_price_free']) && mvx_catalog_get_settings_value($this->settings['is_remove_price_free'], 'checkbox') == "Enable") {
                 add_action('init', array($this, 'remove_price_from_product_list_loop'), 10);
                 add_action('woocommerce_single_product_summary', array($this, 'remove_price_from_product_list_single'), 5);
                 add_filter( 'woocommerce_catalog_orderby', array($this, 'remove_pricing_from_catalog_orderby'), 99 );
@@ -322,13 +321,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function change_permalink_url_for_selected_product() {
         global $Woocommerce_Catalog_Enquiry, $post, $product;
-        $options_button_appearence_settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
         $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
         $product_for = '';
 
-        if (isset($exclusion['woocommerce_product_list'])) {
-            if (is_array($exclusion['woocommerce_product_list']) && isset($post->ID)) {
-                if (in_array($post->ID, $exclusion['woocommerce_product_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) && isset($post->ID)) {
+                if (in_array($post->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect'))) {
                     $product_for = $post->ID;
                 } else {
                     $product_for = '';
@@ -337,12 +335,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         }
         
         $category_for = '';
-        if (isset($exclusion['woocommerce_category_list'])) {
-            if (is_array($exclusion['woocommerce_category_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) {
                 if (isset($product)) {
                     $term_list = wp_get_post_terms($post->ID, 'product_cat', array('fields' => 'ids'));
 
-                    if (count(array_intersect($term_list, $exclusion['woocommerce_category_list'])) > 0) {
+                    if (count(array_intersect($term_list, mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) > 0) {
                         $category_for = $post->ID;
                     } else {
                         $category_for = '';
@@ -362,7 +360,7 @@ class Woocommerce_Catalog_Enquiry_Frontend {
             add_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
             remove_filter('woocommerce_loop_add_to_cart_link', array($this, 'woocommerce_loop_add_to_cart_link'), 99, 3);
         } else {
-            if ($options_button_appearence_settings['button_type']) {
+            if ($this->settings_button['button_type']) {
                 add_filter('woocommerce_loop_add_to_cart_link', array($this, 'woocommerce_loop_add_to_cart_link'), 99, 3);
             }else{
                 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
@@ -377,9 +375,9 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
         $product_for = '';
 
-        if (isset($exclusion['woocommerce_product_list'])) {
-            if (is_array($exclusion['woocommerce_product_list']) && isset($post->ID)) {
-                if (in_array($post->ID, $exclusion['woocommerce_product_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) && isset($post->ID)) {
+                if (in_array($post->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect'))) {
 
                     $product_for = $post->ID;
                 } else {
@@ -394,12 +392,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         
 
         $category_for = '';
-        if (isset($exclusion['woocommerce_category_list'])) {
-            if (is_array($exclusion['woocommerce_category_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) {
                 if (isset($product)) {
                     $term_list = wp_get_post_terms($post->ID, 'product_cat', array('fields' => 'ids'));
 
-                    if (count(array_intersect($term_list, $exclusion['woocommerce_category_list'])) > 0) {
+                    if (count(array_intersect($term_list, mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) > 0) {
                         $category_for = $post->ID;
                     } else {
                         $category_for = '';
@@ -430,11 +428,8 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function add_form_for_enquiry_without_popup() {
         global $Woocommerce_Catalog_Enquiry, $woocommerce, $post, $product;
-        $settings = $Woocommerce_Catalog_Enquiry->options_form_settings;
-        $settings_buttons = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-	$general_settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        if (isset($settings_buttons)) {
-            $enquiry_button_text = isset($settings_buttons['enquiry_button_text']) ? $settings_buttons['enquiry_button_text'] : __('Send an enquiry', 'woocommerce-catalog-enquiry');
+        if (isset($this->settings_button)) {
+            $enquiry_button_text = isset($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : __('Send an enquiry', 'woocommerce-catalog-enquiry');
             if ($enquiry_button_text == '') {
                 $enquiry_button_text = __('Send an enquiry', 'woocommerce-catalog-enquiry');
             }
@@ -443,13 +438,21 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $current_user = wp_get_current_user();
         $product_name = get_post_field('post_title', $productid);
         $product_url = get_permalink($productid);
+
+        $enquiry_form_fileds = [];
+        if (isset($this->settings_form['enquiry_form_fileds']) && !empty($this->settings_form['enquiry_form_fileds'])) {
+            foreach ($this->settings_form['enquiry_form_fileds'] as $key_e => $value_e) {
+                $enquiry_form_fileds[$value_e[0]] = $value_e[1];
+            }
+        }
+        //print_r($enquiry_form_fileds);die;
         ?>    
         <div id="woocommerce-catalog" name="woocommerce_catalog" >	
-            <?php if (isset($general_settings['is_enable_out_of_stock']) && $general_settings['is_enable_out_of_stock'] == "Enable") {
+            <?php if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                 if (!$product->managing_stock() && !$product->is_in_stock()) {
                     ?>
                     <br/>
-                    <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
+                    <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
                     <?php
                     
                 } else {
@@ -459,7 +462,7 @@ class Woocommerce_Catalog_Enquiry_Frontend {
             } else {
                 ?>
                 <br/>
-                <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
+                <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
                 <?php
             } ?>
             <input type="hidden" name="product_name_for_enquiry" id="product-name-for-enquiry" value="<?php echo get_post_field('post_title', $post->ID); ?>" />
@@ -472,9 +475,9 @@ class Woocommerce_Catalog_Enquiry_Frontend {
             ?>" />
             <div id="responsive"  class="catalog_enquiry_form" tabindex="-1">
                 <div class="modal-header">
-                    <?php if (isset($settings['is_override_form_heading'])) { ?>
-                        <?php if (isset($settings['custom_static_heading'])) { ?>
-                            <h2><?php echo str_replace( "PRODUCT_NAME",$product_name, $settings['custom_static_heading'] ); ?></h2>
+                    <?php if (mvx_catalog_get_settings_value($this->settings_form['is_override_form_heading'], 'checkbox')) { ?>
+                        <?php if (isset($this->settings_form['custom_static_heading'])) { ?>
+                            <h2><?php echo str_replace( "PRODUCT_NAME",$product_name, $this->settings_form['custom_static_heading'] ); ?></h2>
                         <?php } ?>
                     <?php } else { ?>
                         <h2><?php echo __('Enquiry about ', 'woocommerce-catalog-enquiry') ?> <?php echo $product_name; ?></h2>
@@ -482,40 +485,46 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                 </div>
                 <div class="modal-body">  
                     <?php
-                    if (isset($settings['top_content_form']) && !empty($settings['top_content_form'])) {
-                        echo '<p class="catalog-enquiry-top-content">' . $settings['top_content_form'] . '</p>';
+                    if (isset($this->settings_form['top_content_form']) && !empty($this->settings_form['top_content_form'])) {
+                        echo '<p class="catalog-enquiry-top-content">' . $this->settings_form['top_content_form'] . '</p>';
                     }
                     ?>
                     <p id="msg-for-enquiry-error" ></p>
                     <p id="msg-for-enquiry-sucesss" ></p>
                     <p id="loader-after-sumitting-the-form" ><img src="<?php echo $Woocommerce_Catalog_Enquiry->plugin_url; ?>assets/images/loader.gif" ></p>
                             <?php wp_nonce_field('wc_catalog_enquiry_mail_form', 'wc_catalog_enq'); ?>
-                    <div class="cat-form-row">
-                        <label><?php
 
-                    if (isset($settings['form_name']['label']) && $settings['form_name']['label'] != '' && $settings['form_name']['label'] != ' ') {
-                        echo $settings['form_name']['label'];
-                    } else {
-                        echo __('Enter your name : ', 'woocommerce-catalog-enquiry');
-                    }
-                            ?></label>	
-                        <input name="woocommerce_user_name" id="woocommerce-user-name"  type="text" value="<?php echo $current_user->display_name; ?>" class="span12" />
-                    </div>
-                    <div class="cat-form-row">						
+                    <div class="cat-form-row">
+                        <?php if (array_key_exists('name-label_checkbox', $enquiry_form_fileds)) { ?>
                         <label><?php
-                    if (isset($settings['form_email']['label']) && $settings['form_email']['label'] != '' && $settings['form_email']['label'] != ' ') {
-                        echo $settings['form_email']['label'];
-                    } else {
-                        echo __('Enter your Email Id : ', 'woocommerce-catalog-enquiry');
-                    }
-                            ?></label>	
-                        <input name="woocommerce_user_email" id="woocommerce-user-email"  type="email" value="<?php echo $current_user->user_email; ?>" class="span12" />
+                            if (array_key_exists('name-label', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['name-label'];
+                            } else {
+                                echo __('Enter your name : ', 'woocommerce-catalog-enquiry');
+                            }
+                        ?></label>	
+                        <input name="woocommerce_user_name" id="woocommerce-user-name"  type="text" value="<?php echo $current_user->display_name; ?>" class="span12" />
+                        <?php } ?>
                     </div>
+
                     <div class="cat-form-row">	
-                        <?php if (isset($settings['form_subject']['is_enable']) && $settings['form_subject']['is_enable'] == "Enable") { ?>
+                        <?php if (array_key_exists('email-label_checkbox', $enquiry_form_fileds)) { ?>					
+                        <label><?php
+                        if (array_key_exists('email-label', $enquiry_form_fileds)) {
+                            echo $enquiry_form_fileds['email-label'];
+                        } else {
+                            echo __('Enter your Email Id : ', 'woocommerce-catalog-enquiry');
+                        }
+                        ?></label>	
+                        <input name="woocommerce_user_email" id="woocommerce-user-email"  type="email" value="<?php echo $current_user->user_email; ?>" class="span12" />
+                        <?php } ?>
+                    </div>
+
+                    <div class="cat-form-row">	
+                        <?php if (array_key_exists('is-subject_checkbox', $enquiry_form_fileds)) { ?>
                             <label><?php
-                            if (isset($settings['form_subject']['label']) && $settings['form_subject']['label'] != '' && $settings['form_subject']['label'] != ' ') {
-                                echo $settings['form_subject']['label'];
+                            if (array_key_exists('is-subject', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-subject'];
                             } else {
                                 echo __('Enter enquiry subject : ', 'woocommerce-catalog-enquiry');
                             }
@@ -523,11 +532,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                             <input name="woocommerce_user_subject" id="woocommerce-user-subject"  type="text" value="<?php echo __('Enquiry about', 'woocommerce-catalog-enquiry'); ?> <?php echo $product_name; ?>" class="span12" />
                         <?php } ?>
                     </div>
+
                     <div class="cat-form-row">	
-                        <?php if (isset($settings['form_phone']['is_enable']) && $settings['form_phone']['is_enable'] == "Enable") { ?>
+                        <?php if (array_key_exists('is-phone_checkbox', $enquiry_form_fileds)) { ?>
                             <label><?php
-                                if (isset($settings['form_phone']['label']) && $settings['form_phone']['label'] != '' && $settings['form_phone']['label'] != ' ') {
-                                    echo $settings['form_phone']['label'];
+                                if (array_key_exists('is-phone', $enquiry_form_fileds)) {
+                                    echo $enquiry_form_fileds['is-phone'];
                                 } else {
                                     echo __('Enter your phone no : ', 'woocommerce-catalog-enquiry');
                                 }
@@ -535,65 +545,72 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                             <input name="woocommerce_user_phone" id="woocommerce-user-phone"  type="text" value="" class="span12" />
                         <?php } ?>
                     </div>
+
                     <div class="cat-form-row">	
-                            <?php if (isset($settings['form_address']['is_enable']) && $settings['form_address']['is_enable'] == "Enable") { ?>
-                            <label><?php
-                                if (isset($settings['form_address']['label']) && $settings['form_address']['label'] != '' && $settings['form_address']['label'] != ' ') {
-                                    echo $settings['form_address']['label'];
-                                } else {
-                                    echo __('Enter your address : ', 'woocommerce-catalog-enquiry');
-                                }
-                                ?></label>	
-                            <input name="woocommerce_user_address" id="woocommerce-user-address"  type="text" value="" class="span12" />
-                            <?php } ?>
+                        <?php if (array_key_exists('is-address_checkbox', $enquiry_form_fileds)) { ?>
+                        <label><?php
+                            if (array_key_exists('is-address', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-address'];
+                            } else {
+                                echo __('Enter your address : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>	
+                        <input name="woocommerce_user_address" id="woocommerce-user-address"  type="text" value="" class="span12" />
+                        <?php } ?>
                     </div>
+
                     <div class="cat-form-row">	
-                            <?php if (isset($settings['form_comment']['is_enable']) && $settings['form_comment']['is_enable'] == "Enable") { ?>
+                        <?php if (array_key_exists('is-comment_checkbox', $enquiry_form_fileds)) { ?>
                             <label><?php
-                    if (isset($settings['form_comment']['label']) && $settings['form_comment']['label'] != '' && $settings['form_comment']['label'] != ' ') {
-                        echo $settings['form_comment']['label'];
-                    } else {
-                        echo __('Enter your Message : ', 'woocommerce-catalog-enquiry');
-                    }
-                                ?></label>	
+                            if (array_key_exists('is-comment', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-comment'];
+                            } else {
+                                echo __('Enter your Message : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>	
                             <textarea name="woocommerce_user_comment" id="woocommerce-user-comment"  rows="5" class="span12"></textarea>
-                            <?php } ?>
+                        <?php } ?>
                     </div>
+
+
                     <div class="cat-form-row">	
-                            <?php if (isset($settings['form_fileupload']['is_enable']) && $settings['form_fileupload']['is_enable'] == "Enable") { ?>
+                        <?php if (array_key_exists('is-fileupload_checkbox', $enquiry_form_fileds)) { ?>
                             <label><?php
-                                    if (isset($settings['form_fileupload']['label']) && $settings['form_fileupload']['label'] != '' && $settings['form_fileupload']['label'] != ' ') {
-                                        echo $settings['form_fileupload']['label'];
-                                    } else {
-                                        echo __('Upload your File : ', 'woocommerce-catalog-enquiry');
-                                    }
-                                    ?></label>	
+                            if (array_key_exists('is-fileupload', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-fileupload'];
+                            } else {
+                                echo __('Upload your File : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>	
                             <input type="file" name="woocommerce_user_fileupload" id="woocommerce-user-fileupload" class="span12" />
+                        <?php } ?>
+                    </div>
+
+
+                    <div class="cat-form-row">							
+                    <?php do_action('woocommerce_catalog_enquiry_form_extra_fileds'); ?> 
+                    <?php if (array_key_exists('is-captcha_checkbox', $enquiry_form_fileds)) { ?>
+                        <label><?php
+                        if (array_key_exists('is-captcha', $enquiry_form_fileds)) {
+                            echo $enquiry_form_fileds['is-captcha'];
+                        } else {
+                            echo __('Security Code', 'woocommerce-catalog-enquiry');
+                        }
+                        ?> <span class="noselect captcha-wrap"><i><?php echo get_transient('woocaptcha'); ?></i></span></p>
+                        <p><?php
+                        echo __('Enter the security code shown above', 'woocommerce-catalog-enquiry');
+                        ?> </p>
+                        <input type="text" id="woocommerce-catalog-captcha" name="woocommerce_captcha" class="span12" />
                     <?php } ?>
                     </div>
-                    <div class="cat-form-row">							
-        <?php do_action('woocommerce_catalog_enquiry_form_extra_fileds'); ?> 
-        <?php if (isset($settings['form_captcha']['is_enable']) && $settings['form_captcha']['is_enable'] == "Enable") { ?>
-                            <label><?php
-            if (isset($settings['form_captcha']['label']) && $settings['form_captcha']['label'] != '' && $settings['form_captcha']['label'] != ' ') {
-                echo $settings['form_captcha']['label'];
-            } else {
-                echo __('Security Code', 'woocommerce-catalog-enquiry');
-            }
-            ?> <span class="noselect captcha-wrap"><i><?php echo get_transient('woocaptcha'); ?></i></span></p>
-                                <p><?php
-            
-            echo __('Enter the security code shown above', 'woocommerce-catalog-enquiry');
-            
-            ?> </p>
-                                <input type="text" id="woocommerce-catalog-captcha" name="woocommerce_captcha" class="span12" />
-        <?php } ?>
-                    </div>
-        <?php
-        if (isset($settings['bottom_content_form']) && !empty($settings['bottom_content_form'])) {
-            echo '<p class="catalog-enquiry-bottom-content">' . $settings['bottom_content_form'] . '</p>';
-        }
-        ?> 
+
+
+                    <?php
+                    if (isset($this->settings_form['bottom_content_form']) && !empty($this->settings_form['bottom_content_form'])) {
+                        echo '<p class="catalog-enquiry-bottom-content">' . $this->settings_form['bottom_content_form'] . '</p>';
+                    }
+                    ?> 
+
                 </div>
                 <div class="modal-footer">		
                     <button type="button" id="woocommerce-submit-enquiry" class="btn btn-primary"><?php echo __('Send', 'woocommerce-catalog-enquiry'); ?></button>
@@ -605,17 +622,10 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function add_form_for_enquiry() {
         global $Woocommerce_Catalog_Enquiry, $woocommerce, $post, $product, $wp_version;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $settings_gen = $Woocommerce_Catalog_Enquiry->options_form_settings;
-        $is_page_redirect = '';
-        if (isset($settings['is_page_redirect'])) {
-            $is_page_redirect = $settings['is_page_redirect'];
-            $redirect_page_id = $settings['redirect_page_id'];
-        }
-        $settings_buttons = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        if (isset($settings_buttons)) {
-            $custom_design_for_button = isset($settings_buttons['is_button']) ? $settings_buttons['is_button'] : '';
-            $enquiry_button_text = isset($settings_buttons['enquiry_button_text']) ? $settings_buttons['enquiry_button_text'] : __('Send an enquiry', 'woocommerce-catalog-enquiry');
+
+        if (isset($this->settings_button)) {
+            $custom_design_for_button = isset($this->settings_button['is_button']) ? mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') : '';
+            $enquiry_button_text = isset($this->settings_button['enquiry_button_text']) ? $this->settings_button['enquiry_button_text'] : __('Send an enquiry', 'woocommerce-catalog-enquiry');
             if ($enquiry_button_text == '') {
                 $enquiry_button_text = __('Send an enquiry', 'woocommerce-catalog-enquiry');
             }
@@ -625,19 +635,26 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $current_user = wp_get_current_user();
         $product_name = get_post_field('post_title', $productid);
         $product_url = get_permalink($productid);
+
+        $enquiry_form_fileds = [];
+        if (isset($this->settings_form['enquiry_form_fileds']) && !empty($this->settings_form['enquiry_form_fileds'])) {
+            foreach ($this->settings_form['enquiry_form_fileds'] as $key_e => $value_e) {
+                $enquiry_form_fileds[$value_e[0]] = $value_e[1];
+            }
+        }
         ?>
         <div id="woocommerce-catalog" name="woocommerce_catalog" >
                         
-            <?php if (isset($settings['is_enable_out_of_stock']) && $settings['is_enable_out_of_stock'] == "Enable") {
+            <?php if (isset($this->settings['is_enable_out_of_stock']) && mvx_catalog_get_settings_value($this->settings['is_enable_out_of_stock'], 'checkbox') == "Enable") {
                 if (!$product->managing_stock() && !$product->is_in_stock()) {
-                    if (isset($custom_design_for_button) && $custom_design_for_button == "Enable") {
+                    if ($custom_design_for_button == "Enable") {
                         ?>
                         <br/>
-                        <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
+                        <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
                         <?php
                     } else {
                         ?>
-                        <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php esc_html_e('Send an enquiry', 'woocommerce-catalog-enquiry') ?></button>
+                        <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php esc_html_e('Send an enquiry', 'woocommerce-catalog-enquiry') ?></button>
                         <?php
                     }
                 } else {
@@ -645,14 +662,14 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                     echo '<a href="' . esc_url( $product_object->add_to_cart_url() ) . '" class="add-to-cart button">' . esc_html__( 'Add to Cart', 'woocommerce-catalog-enquiry' ) . '</a>';
                 }
             } else {
-                if (isset($custom_design_for_button) && $custom_design_for_button == "Enable") { 
+                if ($custom_design_for_button == "Enable") { 
                     ?>
                     <br/>
-                    <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
+                    <button class="woocommerce-catalog-enquiry-btn button woocommerce-catalog-enquiry-custom-button-enquiry <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" href="#responsive"><?php echo esc_html($enquiry_button_text); ?></button>
                     <?php
                 } else {
                     ?>
-                    <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($settings_buttons && isset($settings_buttons['is_button']) && $settings_buttons['is_button'] == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php esc_html_e('Send an enquiry', 'woocommerce-catalog-enquiry') ?></button>
+                    <button class="woocommerce-catalog-enquiry-btn button demo btn btn-primary btn-large <?php if ($this->settings_button && isset($this->settings_button['is_button']) && mvx_catalog_get_settings_value($this->settings_button['is_button'], 'checkbox') == 'Enable') echo 'custom_enquiry_buttons_css_new'; else echo ''; ?>" style="margin-top:15px;" href="#responsive"><?php esc_html_e('Send an enquiry', 'woocommerce-catalog-enquiry') ?></button>
                     <?php
                 }
             } ?>
@@ -669,127 +686,145 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close">&times;</button>
-                                <?php if (isset($settings_gen['is_override_form_heading'])) { ?>
-                                    <?php if (isset($settings_gen['custom_static_heading'])) { ?>
-                                <h2><?php echo str_replace( "PRODUCT_NAME", $product_name, $settings_gen['custom_static_heading'] ); ?></h2>
+                                <?php if (mvx_catalog_get_settings_value($this->settings_form['is_override_form_heading'], 'checkbox')) { ?>
+                                    <?php if (isset($this->settings_form['custom_static_heading'])) { ?>
+                                <h2><?php echo str_replace( "PRODUCT_NAME", $product_name, $this->settings_form['custom_static_heading'] ); ?></h2>
                                     <?php } ?>
-        <?php } else { ?>
+                                <?php } else { ?>
                             <h2><?php echo __('Enquiry about ', 'woocommerce-catalog-enquiry') ?> <?php echo $product_name; ?></h2>
                             <?php } ?>
                     </div>
                     <div class="modal-body">  
-                                <?php
-                                if (isset($settings_gen['top_content_form'])) {
-                                    echo '<p class="catalog-enquiry-top-content">' . $settings_gen['top_content_form'] . '</p>';
-                                }
-                                ?>
+                        <?php
+                        if (isset($this->settings_form['top_content_form'])) {
+                            echo '<p class="catalog-enquiry-top-content">' . $this->settings_form['top_content_form'] . '</p>';
+                        }
+                        ?>
                         <p id="msg-for-enquiry-error"></p>
                         <p id="msg-for-enquiry-sucesss"></p>
                         <p id="loader-after-sumitting-the-form"><img src="<?php echo $Woocommerce_Catalog_Enquiry->plugin_url; ?>assets/images/loader.gif" ></p>
-                            <?php wp_nonce_field('wc_catalog_enquiry_mail_form', 'wc_catalog_enq'); ?>
-                        <div class="cat-form-row">
-                            <label><?php
-                                if (isset($settings_gen['form_name']['label']) && $settings_gen['form_name']['label'] != '' && $settings_gen['form_name']['label'] != ' ') {
-                                    echo $settings_gen['form_name']['label'];
-                                } else {
-                                    echo __('Enter your name : ', 'woocommerce-catalog-enquiry');
-                                }
-                                ?></label>	
-                            <input name="woocommerce_user_name" id="woocommerce-user-name"  type="text" value="<?php echo $current_user->display_name; ?>" class="span12" />
-                        </div>
-                        <div class="cat-form-row">
-                            <label><?php
-                                if (isset($settings_gen['form_email']['label']) && $settings_gen['form_email']['label'] != '' && $settings_gen['form_email']['label'] != ' ') {
-                                    echo $settings_gen['form_email']['label'];
-                                } else {
-                                    echo __('Enter your Email Id : ', 'woocommerce-catalog-enquiry');
-                                }
-                                ?></label>	
-                            <input name="woocommerce_user_email" id="woocommerce-user-email"  type="email" value="<?php echo $current_user->user_email; ?>" class="span12" />
-                        </div>
-                        <div class="cat-form-row">
-                                <?php if (isset($settings_gen['form_subject']['is_enable']) && $settings_gen['form_subject']['is_enable'] == "Enable") { ?>
-                                <label><?php
-                                    if (isset($settings_gen['form_subject']['label']) && $settings_gen['form_subject']['label'] != '' && $settings_gen['form_subject']['label'] != ' ') {
-                                        echo $settings_gen['form_subject']['label'];
-                                    } else {
-                                        echo __('Enter enquiry subject : ', 'woocommerce-catalog-enquiry');
-                                    }
-                                    ?></label>	
-                                <input name="woocommerce_user_subject" id="woocommerce-user-subject"  type="text" value="<?php echo __('Enquiry about', 'woocommerce-catalog-enquiry'); ?> <?php echo $product_name; ?>" class="span12" />
-                                <?php } ?>
-                        </div>
-                        <div class="cat-form-row">
-                                <?php if (isset($settings_gen['form_phone']['is_enable']) && $settings_gen['form_phone']['is_enable'] == "Enable") { ?>
-                                <label><?php
-                        if (isset($settings_gen['form_phone']['label']) && $settings_gen['form_phone']['label'] != '' && $settings_gen['form_phone']['label'] != ' ') {
-                            echo $settings_gen['form_phone']['label'];
-                        } else {
-                            echo __('Enter your phone no : ', 'woocommerce-catalog-enquiry');
-                        }
-                                    ?></label>	
-                                <input name="woocommerce_user_phone" id="woocommerce-user-phone"  type="text" value="" class="span12" />
-                                <?php } ?>
-                        </div>
-                        <div class="cat-form-row">
-                                <?php if (isset($settings_gen['form_address']['is_enable']) && $settings_gen['form_address']['is_enable'] == "Enable") { ?>
-                                <label><?php
-                                    if (isset($settings_gen['form_address']['label']) && $settings_gen['form_address']['label'] != '' && $settings_gen['form_address']['label'] != ' ') {
-                                        echo $settings_gen['form_address']['label'];
-                                    } else {
-                                        echo __('Enter your address : ', 'woocommerce-catalog-enquiry');
-                                    }
-                                    ?></label>	
-                                <input name="woocommerce_user_address" id="woocommerce-user-address"  type="text" value="" class="span12" />
+                        <?php wp_nonce_field('wc_catalog_enquiry_mail_form', 'wc_catalog_enq'); ?>
+
+
+
+                    <div class="cat-form-row">
+                        <?php if (array_key_exists('name-label_checkbox', $enquiry_form_fileds)) { ?>
+                        <label><?php
+                            if (array_key_exists('name-label', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['name-label'];
+                            } else {
+                                echo __('Enter your name : ', 'woocommerce-catalog-enquiry');
+                            }
+                        ?></label>  
+                        <input name="woocommerce_user_name" id="woocommerce-user-name"  type="text" value="<?php echo $current_user->display_name; ?>" class="span12" />
                         <?php } ?>
-                        </div>
-                        <div class="cat-form-row">
-        <?php if (isset($settings_gen['form_comment']['is_enable']) && $settings_gen['form_comment']['is_enable'] == "Enable") { ?>
-                                <label><?php
-            if (isset($settings_gen['form_comment']['label']) && $settings_gen['form_comment']['label'] != '' && $settings_gen['form_comment']['label'] != ' ') {
-                echo $settings_gen['form_comment']['label'];
-            } else {
-                echo __('Enter your Message : ', 'woocommerce-catalog-enquiry');
-            }
-            ?></label>	
-                                <textarea name="woocommerce_user_comment" id="woocommerce-user-comment"  rows="5" class="span12"></textarea>
-        <?php } ?>
-                        </div>
-                        <div class="cat-form-row">
-        <?php if (isset($settings_gen['form_fileupload']['is_enable']) && $settings_gen['form_fileupload']['is_enable'] == "Enable") { ?>
-                                <label><?php
-            if (isset($settings_gen['form_fileupload']['label']) && $settings_gen['form_fileupload']['label'] != '' && $settings_gen['form_fileupload']['label'] != ' ') {
-                echo $settings_gen['form_fileupload']['label'];
-            } else {
-                echo __('Upload your File : ', 'woocommerce-catalog-enquiry');
-            }
-            ?></label>	
-                                <input type="file" name="woocommerce_user_fileupload" id="woocommerce-user-fileupload" class="span12" />
-        <?php } ?>
-                        </div>
-                        <div class="cat-form-row">							
-        <?php do_action('woocommerce_catalog_enquiry_form_extra_fileds'); ?> 
-        <?php if (isset($settings_gen['form_captcha']['is_enable']) && $settings_gen['form_captcha']['is_enable'] == "Enable") { ?>
-                                <label><?php
-            if (isset($settings_gen['form_captcha']['label']) && $settings_gen['form_captcha']['label'] != '' && $settings_gen['form_captcha']['label'] != ' ') {
-                echo $settings_gen['form_captcha']['label'];
-            } else {
-                echo __('Security Code', 'woocommerce-catalog-enquiry');
-            }
-            ?> <span class="noselect captcha-wrap"><i><?php echo get_transient('woocaptcha'); ?></i></span></label>
-                                <p><?php
-            
-            echo __('Enter the security code shown above', 'woocommerce-catalog-enquiry');
-            
-            ?> </p>
-                                <input type="text" id="woocommerce-catalog-captcha" name="woocommerce_captcha" class="span12" />
-        <?php } ?>
-                        </div>							
-        <?php
-        if (isset($settings_gen['bottom_content_form']) && !empty($settings_gen['bottom_content_form'])) {
-            echo '<p class="catalog-enquiry-bottom-content">' . $settings_gen['bottom_content_form'] . '</p>';
-        }
-        ?>
+                    </div>
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('email-label_checkbox', $enquiry_form_fileds)) { ?>                  
+                        <label><?php
+                        if (array_key_exists('email-label', $enquiry_form_fileds)) {
+                            echo $enquiry_form_fileds['email-label'];
+                        } else {
+                            echo __('Enter your Email Id : ', 'woocommerce-catalog-enquiry');
+                        }
+                        ?></label>  
+                        <input name="woocommerce_user_email" id="woocommerce-user-email"  type="email" value="<?php echo $current_user->user_email; ?>" class="span12" />
+                        <?php } ?>
+                    </div>
+
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('is-subject_checkbox', $enquiry_form_fileds)) { ?>
+                            <label><?php
+                            if (array_key_exists('is-subject', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-subject'];
+                            } else {
+                                echo __('Enter enquiry subject : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>  
+                            <input name="woocommerce_user_subject" id="woocommerce-user-subject"  type="text" value="<?php echo __('Enquiry about', 'woocommerce-catalog-enquiry'); ?> <?php echo $product_name; ?>" class="span12" />
+                        <?php } ?>
+                    </div>
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('is-phone_checkbox', $enquiry_form_fileds)) { ?>
+                            <label><?php
+                                if (array_key_exists('is-phone', $enquiry_form_fileds)) {
+                                    echo $enquiry_form_fileds['is-phone'];
+                                } else {
+                                    echo __('Enter your phone no : ', 'woocommerce-catalog-enquiry');
+                                }
+                                ?></label>  
+                            <input name="woocommerce_user_phone" id="woocommerce-user-phone"  type="text" value="" class="span12" />
+                        <?php } ?>
+                    </div>
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('is-address_checkbox', $enquiry_form_fileds)) { ?>
+                        <label><?php
+                            if (array_key_exists('is-address', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-address'];
+                            } else {
+                                echo __('Enter your address : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>  
+                        <input name="woocommerce_user_address" id="woocommerce-user-address"  type="text" value="" class="span12" />
+                        <?php } ?>
+                    </div>
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('is-comment_checkbox', $enquiry_form_fileds)) { ?>
+                            <label><?php
+                            if (array_key_exists('is-comment', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-comment'];
+                            } else {
+                                echo __('Enter your Message : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>  
+                            <textarea name="woocommerce_user_comment" id="woocommerce-user-comment"  rows="5" class="span12"></textarea>
+                        <?php } ?>
+                    </div>
+
+
+                    <div class="cat-form-row">  
+                        <?php if (array_key_exists('is-fileupload_checkbox', $enquiry_form_fileds)) { ?>
+                            <label><?php
+                            if (array_key_exists('is-fileupload', $enquiry_form_fileds)) {
+                                echo $enquiry_form_fileds['is-fileupload'];
+                            } else {
+                                echo __('Upload your File : ', 'woocommerce-catalog-enquiry');
+                            }
+                            ?></label>  
+                            <input type="file" name="woocommerce_user_fileupload" id="woocommerce-user-fileupload" class="span12" />
+                        <?php } ?>
+                    </div>
+
+                    <div class="cat-form-row">                          
+                    <?php do_action('woocommerce_catalog_enquiry_form_extra_fileds'); ?> 
+                    <?php if (array_key_exists('is-captcha_checkbox', $enquiry_form_fileds)) { ?>
+                        <label><?php
+                        if (array_key_exists('is-captcha', $enquiry_form_fileds)) {
+                            echo $enquiry_form_fileds['is-captcha'];
+                        } else {
+                            echo __('Security Code', 'woocommerce-catalog-enquiry');
+                        }
+                        ?> <span class="noselect captcha-wrap"><i><?php echo get_transient('woocaptcha'); ?></i></span></p>
+                        <p><?php
+                        echo __('Enter the security code shown above', 'woocommerce-catalog-enquiry');
+                        ?> </p>
+                        <input type="text" id="woocommerce-catalog-captcha" name="woocommerce_captcha" class="span12" />
+                    <?php } ?>
+                    </div>
+
+
+
+
+                    <?php
+                    if (isset($this->settings_form['bottom_content_form']) && !empty($this->settings_form['bottom_content_form'])) {
+                        echo '<p class="catalog-enquiry-bottom-content">' . $this->settings_form['bottom_content_form'] . '</p>';
+                    }
+                    ?>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default"><?php echo __('Close', 'woocommerce-catalog-enquiry'); ?></button>
@@ -802,14 +837,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
     }
 
     public function price_for_selected_product() {
-        global $Woocommerce_Catalog_Enquiry, $post, $product;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
+        global $post, $product;
         $product_for = '';
 
-        if (isset($exclusion['woocommerce_product_list'])) {
-            if (is_array($exclusion['woocommerce_product_list']) && isset($post->ID)) {
-                if (in_array($post->ID, $exclusion['woocommerce_product_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) && isset($post->ID)) {
+                if (in_array($post->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect'))) {
                     $product_for = $post->ID;
                 } else {
                     $product_for = '';
@@ -819,12 +852,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
 
         $category_for = '';
-        if (isset($exclusion['woocommerce_category_list'])) {
-            if (is_array($exclusion['woocommerce_category_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) {
                 if (isset($product)) {
                     $term_list = wp_get_post_terms($post->ID, 'product_cat', array('fields' => 'ids'));
 
-                    if (count(array_intersect($term_list, $exclusion['woocommerce_category_list'])) > 0) {
+                    if (count(array_intersect($term_list, mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) > 0) {
                         $category_for = $post->ID;
                     } else {
                         $category_for = '';
@@ -844,21 +877,19 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         if ($product_for == $post->ID || $category_for == $post->ID) {
             add_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
         } else {
-            if (isset($settings['is_remove_price_free']) && $settings['is_remove_price_free'] == "Enable") {
+            if (isset($this->settings['is_remove_price_free']) && mvx_catalog_get_settings_value($this->settings['is_remove_price_free'], 'checkbox') == "Enable") {
                 remove_action('woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10);
             }
         }
     }
 
     public function add_to_cart_button_for_selected_product() {
-        global $Woocommerce_Catalog_Enquiry, $post, $product;
-        $settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        $exclusion = $Woocommerce_Catalog_Enquiry->options_exclusion_settings;
+        global $post, $product;
         $product_for = '';
 
-        if (isset($exclusion['woocommerce_product_list'])) {
-            if (is_array($exclusion['woocommerce_product_list']) && isset($post->ID)) {
-                if (in_array($post->ID, $exclusion['woocommerce_product_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect')) && isset($post->ID)) {
+                if (in_array($post->ID, mvx_catalog_get_settings_value($this->exclusion['woocommerce_product_list'], 'multiselect'))) {
                     $product_for = $post->ID;
                 } else {
                     $product_for = '';
@@ -868,12 +899,12 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         
 
         $category_for = '';
-        if (isset($exclusion['woocommerce_category_list'])) {
-            if (is_array($exclusion['woocommerce_category_list'])) {
+        if (mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect')) {
+            if (is_array(mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) {
                 if (isset($product)) {
                     $term_list = wp_get_post_terms($post->ID, 'product_cat', array('fields' => 'ids'));
 
-                    if (count(array_intersect($term_list, $exclusion['woocommerce_category_list'])) > 0) {
+                    if (count(array_intersect($term_list, mvx_catalog_get_settings_value($this->exclusion['woocommerce_category_list'], 'multiselect'))) > 0) {
                         $category_for = $post->ID;
                     } else {
                         $category_for = '';
@@ -892,7 +923,7 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         if ($product_for == $post->ID || $category_for == $post->ID) {
             add_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
         } else {
-            if ($settings['button_type']) {
+            if (mvx_catalog_get_settings_value($this->settings_button['button_type'], 'select')) {
                 add_filter('woocommerce_loop_add_to_cart_link', array($this, 'woocommerce_loop_add_to_cart_link'), 99, 3);
             } else {
                 remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
@@ -901,53 +932,45 @@ class Woocommerce_Catalog_Enquiry_Frontend {
     }
 
     public function add_read_more_button() {
-        global $Woocommerce_Catalog_Enquiry, $post;
-        $settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        $enquiry_button_text = "Read More";
-        if (!empty($settings['enquiry_button_text'])) {
-            $enquiry_button_text = $settings['enquiry_button_text'];
+        global $post;
+        $enquiry_button_text = __("Read More", 'woocommerce-catalog-enquiry');
+        if (!empty($this->settings['enquiry_button_text'])) {
+            $enquiry_button_text = $this->settings['enquiry_button_text'];
         }
         $link = get_permalink($post->ID);
         echo ' <center><a  id="woocommerce-catalog-enquiry-custom-button" href="' . $link . '" class="single_add_to_cart_button button">' . $enquiry_button_text . '</a></center>';
     }
 
     public function add_external_link_button() {
-        global $Woocommerce_Catalog_Enquiry;
-        $settings_button = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
         $enquiry_button_text = "Read More";
-        if (!empty($settings_button['enquiry_button_text'])) {
-            $enquiry_button_text = $settings_button['enquiry_button_text'];
+        if (!empty($this->settings_button['enquiry_button_text'])) {
+            $enquiry_button_text = $this->settings_button['enquiry_button_text'];
         }
-        $link = $settings_button['button_link'];
+        $link = $this->settings_button['button_link'];
         echo ' <center><a  id="woocommerce-catalog-enquiry-custom-button" href="' . $link . '" class="single_add_to_cart_button button">' . $enquiry_button_text . '</a></center>';
     }
 
     public function add_external_link_button_independent() {
-        global $Woocommerce_Catalog_Enquiry, $post;
-        $settings_button = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
+        global $post;
         $enquiry_button_text = "Read More";
-        if (!empty($settings_button['enquiry_button_text'])) {
-            $enquiry_button_text = $settings_button['enquiry_button_text'];
+        if (!empty($this->settings_button['enquiry_button_text'])) {
+            $enquiry_button_text = $this->settings_button['enquiry_button_text'];
         }
         $link = get_post_field("woocommerce_catalog_enquiry_product_link", $post->ID);
         echo ' <center><a id="woocommerce-catalog-enquiry-custom-button" href="' . $link . '" class="single_add_to_cart_button button">' . $enquiry_button_text . '</a></center>';
     }
 
     public function add_custom_button_without_link() {
-        global $Woocommerce_Catalog_Enquiry;
-        $settings_button = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
         $enquiry_button_text = "Read More";
-        if (!empty($settings_button['enquiry_button_text'])) {
-            $enquiry_button_text = $settings_button['enquiry_button_text'];
+        if (!empty($this->settings_button['enquiry_button_text'])) {
+            $enquiry_button_text = $this->settings_button['enquiry_button_text'];
         }
         $link = "#";
         echo ' <center><a id="woocommerce-catalog-enquiry-custom-button" href="' . $link . '" class="single_add_to_cart_button button">' . $enquiry_button_text . '</a></center>';
     }
 
     public function remove_add_to_cart_button() {
-        global $Woocommerce_Catalog_Enquiry, $post;
-        $settings_button = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        if ( isset( $settings_button['button_type'] ) ) {
+        if ( isset( $this->settings_button['button_type'] ) ) {
             add_filter('woocommerce_loop_add_to_cart_link', array($this, 'woocommerce_loop_add_to_cart_link'), 99, 3);
         } else {
             remove_action('woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10);
@@ -960,7 +983,7 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     public function add_variation_product() {
 
-        global $Woocommerce_Catalog_Enquiry, $post, $product;
+        global $Woocommerce_Catalog_Enquiry, $product;
         if ($product->is_type('variable')) {
             $variable_product = new WC_Product_Variable($product);
             // Enqueue variation scripts
@@ -989,10 +1012,8 @@ class Woocommerce_Catalog_Enquiry_Frontend {
         $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
         // Enqueue your frontend javascript from here
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $settings_gen = $Woocommerce_Catalog_Enquiry->options_form_settings;
 
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable") {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable") {
 
             wp_enqueue_script('wce_frontend_js', $frontend_script_path . 'frontend.js', array( 'jquery', 'jquery-blockui' ), $Woocommerce_Catalog_Enquiry->version, true);
 
@@ -1000,21 +1021,6 @@ class Woocommerce_Catalog_Enquiry_Frontend {
             $arr_field = array();
             $arr_field[] = "name";
             $arr_field[] = "email";
-            if (isset($settings_gen['form_subject']['is_enable']) && $settings_gen['form_subject']['is_enable'] == "Enable") {
-                $arr_field[] = "subject";
-            }
-            if (isset($settings_gen['form_phone']['is_enable']) && $settings_gen['form_phone']['is_enable'] == "Enable") {
-                $arr_field[] = "phone";
-            }
-            if (isset($settings_gen['form_address']['is_enable']) && $settings_gen['form_address']['is_enable'] == "Enable") {
-                $arr_field[] = "address";
-            }
-            if (isset($settings_gen['form_comment']['is_enable']) && $settings_gen['form_comment']['is_enable'] == "Enable") {
-                $arr_field[] = "comment";
-            }
-            if (isset($settings_gen['form_fileupload']['is_enable']) && $settings_gen['form_fileupload']['is_enable'] == "Enable") {
-                $arr_field[] = "fileupload";
-            }
 
             // error levels
             $error_levels = array();
@@ -1041,11 +1047,11 @@ class Woocommerce_Catalog_Enquiry_Frontend {
                     'wce_frontend_js', 'catalog_enquiry_front', apply_filters('woocommerce_catalog_enquiry_localize_script_data', array(
                 'ajaxurl' => admin_url('admin-ajax.php'),
                 'json_arr' => json_encode($arr_field),
-                'settings' => $settings,
-                'settings_gen' => $settings_gen,
+                'settings' => $this->settings,
+                'settings_gen' => $this->settings_form,
                 'error_levels' => $error_levels,
                 'ajax_success_msg' => __('Enquiry sent successfully', 'woocommerce-catalog-enquiry'),
-                'redirect_link' => get_permalink($settings['redirect_page_id']),
+                'redirect_link' => get_permalink(mvx_catalog_get_settings_value($this->settings['redirect_page_id'], 'select')),
                 'captcha' => $captcha,
             )));
         }
@@ -1053,20 +1059,17 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
     function frontend_styles() {
         global $Woocommerce_Catalog_Enquiry;
-        $settings_genaral = $Woocommerce_Catalog_Enquiry->options_general_settings;
-        $settings = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
-        $settings_buttons = $Woocommerce_Catalog_Enquiry->options_button_appearence_settings;
 
         $frontend_style_path = $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/frontend/css/';
         $frontend_style_path = str_replace(array('http:', 'https:'), '', $frontend_style_path);
         $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
         // Enqueue your frontend stylesheet from here
-        if (isset($settings_genaral['is_enable']) && $settings_genaral['is_enable'] == "Enable") {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable") {
             wp_enqueue_style('wce_frontend_css', $frontend_style_path . 'frontend.css', array(), $Woocommerce_Catalog_Enquiry->version);
 
-            if (isset($settings_buttons) || isset($settings)) {
-                $custom_button_css = isset($settings['custom_enquiry_buttons_css']) ? $settings['custom_enquiry_buttons_css'] : '';
+            if (isset($this->settings_button) || isset($settings)) {
+                $custom_button_css = /*isset($this->settings['custom_enquiry_buttons_css']) ? $this->settings['custom_enquiry_buttons_css'] : */'';
                 $inline_css = "				
 				
 				/* The Modal (background) */
@@ -1086,20 +1089,17 @@ class Woocommerce_Catalog_Enquiry_Frontend {
 
                 wp_add_inline_style('wce_frontend_css', $inline_css);
             }
-            if (isset($settings['custom_css_product_page']) && $settings['custom_css_product_page'] != "") {
-                wp_add_inline_style('wce_frontend_css', $settings['custom_css_product_page']);
+            if (isset($this->settings['custom_css_product_page']) && $this->settings['custom_css_product_page'] != "") {
+                wp_add_inline_style('wce_frontend_css', $this->settings['custom_css_product_page']);
             }
         }
     }
     
     public function wce_enquiry_button_shortcode() {
-        global $Woocommerce_Catalog_Enquiry;
-        $settings = $Woocommerce_Catalog_Enquiry->options_general_settings;
-
-        if (isset($settings['is_enable']) && $settings['is_enable'] == "Enable" && ($this->available_for == '' || $this->available_for == 0)) {
-            if (isset($settings['is_enable_enquiry']) && $settings['is_enable_enquiry'] == "Enable") {
+        if (isset($this->settings['is_enable']) && mvx_catalog_get_settings_value($this->settings['is_enable'], 'checkbox') == "Enable" && ($this->available_for == '' || $this->available_for == 0)) {
+            if (isset($this->settings['is_enable_enquiry']) && mvx_catalog_get_settings_value($this->settings['is_enable_enquiry'], 'checkbox') == "Enable") {
                 $piority = apply_filters('woocommerce_catalog_enquiry_button_possition_piority', 100);
-                if (isset($settings['is_disable_popup']) && $settings['is_disable_popup'] == "Enable") {
+                if (isset($this->settings['is_disable_popup']) && mvx_catalog_get_settings_value($this->settings['is_disable_popup'], 'checkbox') == "Enable") {
                     remove_action('woocommerce_single_product_summary', array($this, 'add_form_for_enquiry_without_popup'), $piority);
                     $this->add_form_for_enquiry_without_popup();
                 } else {

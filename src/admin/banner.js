@@ -9,16 +9,20 @@ class Banner extends Component {
 					<div className='mvx-logo-right'>
 					<p className='mvx-banner-description'>
 
-					With MultiendorX Pro You Get More Control Over Every Aspect of Your Marketplace
+					<h2 className='white-font'>Why go Pro?</h2>
 					<br/>
-					1.All Product Type Support 
+					1.Fully Customisable Product Enquiry Form.
 					<br/>
-					2.Instant Payment to Vendors 
+					2.Multiple Products Inquiry with Enquiry Cart.
 					<br/>
-					3.Create Vendor Membership Plans
+					3.Provide Checkout and Enquiry Option at the same time.
 					<br/>
-					4.Quick Real-Time Chat with Vendors
-					Upgrade to <a href="https://multivendorx.com/pricing/">MultiVendorX Pro</a> Today!!
+					4.Customise Catalog Button to Match theme.
+					<br/>
+					5.In-built Reply System.
+					<br/>
+					6. <a href="">Marketplace</a> Compatible.
+					
 
 
 					</p>
