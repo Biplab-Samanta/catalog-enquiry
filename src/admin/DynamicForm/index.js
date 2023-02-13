@@ -1,4 +1,4 @@
-/* global appLocalizer */
+/* global catalogappLocalizer */
 import React from 'react';
 import Select from 'react-select';
 import axios from 'axios';
@@ -117,7 +117,7 @@ export default class DynamicForm extends React.Component {
 	handleSaveNewRegistration(e) {
 		axios({
 			method: 'post',
-			url: `${appLocalizer.apiUrl}/mvx_catalog_pro/v1/update_enquiry_data`,
+			url: `${catalogappLocalizer.apiUrl}/mvx_catalog_pro/v1/update_enquiry_data`,
 			data: {
 				form_data: JSON.stringify(
 					this.state.mvx_registration_fileds_list
@@ -486,7 +486,7 @@ export default class DynamicForm extends React.Component {
 	handle_Vendor_active_suspend(e, api, status, vendor_id) {
 		axios({
 			method: 'post',
-			url: `${appLocalizer.apiUrl}/mvx_module/v1/active_suspend_vendor`,
+			url: `${catalogappLocalizer.apiUrl}/mvx_module/v1/active_suspend_vendor`,
 			data: {
 				status,
 				vendor_id,
@@ -554,7 +554,7 @@ export default class DynamicForm extends React.Component {
 		} else if (filedsdetails.type === 'country') {
 			itemsnested[index][filedsdetails.key] = selectarray[e.index];
 			const statefromcountrycode = JSON.parse(
-				appLocalizer.countries.replace(/&quot;/g, '"')
+				catalogappLocalizer.countries.replace(/&quot;/g, '"')
 			)[e.value];
 
 			for (const keysssssss in statefromcountrycode) {
@@ -739,7 +739,7 @@ export default class DynamicForm extends React.Component {
 		delete this.state.mapInstance;
 		axios({
 			method: this.props.method,
-			url: appLocalizer.apiUrl + '/' + this.props.url,
+			url: catalogappLocalizer.apiUrl + '/' + this.props.url,
 			data: {
 				model: this.state,
 				modulename: this.props.modulename,
@@ -774,12 +774,12 @@ export default class DynamicForm extends React.Component {
 		});
 		// mapbox work
 		if (
-			this.props.modulename === 'vendor-store' && appLocalizer.store_location_enabled &&
-			appLocalizer.location_provider.value &&
-			appLocalizer.location_provider.value === 'mapbox_api_set'
+			this.props.modulename === 'vendor-store' && catalogappLocalizer.store_location_enabled &&
+			catalogappLocalizer.location_provider.value &&
+			catalogappLocalizer.location_provider.value === 'mapbox_api_set'
 		) {
 			const this_data = this;
-			mapboxgl.accessToken = appLocalizer.mapbox_api;
+			mapboxgl.accessToken = catalogappLocalizer.mapbox_api;
 			const map = new mapboxgl.Map({
 				container: 'map',
 				style: 'mapbox://styles/mapbox/streets-v11',
@@ -797,7 +797,7 @@ export default class DynamicForm extends React.Component {
 				geocoder.on('result', function (ev) {
 					axios({
 						method: 'post',
-						url: `${appLocalizer.apiUrl}/mvx_module/v1/update_vendor_store`,
+						url: `${catalogappLocalizer.apiUrl}/mvx_module/v1/update_vendor_store`,
 						data: {
 							places: ev.result.place_name,
 							lat: ev.result.center[0],
@@ -811,46 +811,50 @@ export default class DynamicForm extends React.Component {
 		}
 
 		// custom field addition
-		axios({
-			url: `${appLocalizer.apiUrl}/mvx_catalog_pro/v1/fetch_enquiry_data`,
-		}).then((response) => {
-			let formJson4 = this.state.mvx_registration_fileds_list;
-			if (response.data.length > 0) {
-				formJson4 = response.data;
-			} else {
-				formJson4.push({
-					id: 'parent_title',
-					type: 'p_title',
-					label: '',
-					hidden: false,
-					label_placeholder: '',
-					description: '',
-					description_placeholder: '',
-				});
 
-				formJson4.push({
-					id: formJson4.length,
-					type: 'textbox',
-					label: '',
-					hidden: false,
-					placeholder: '',
-					required: false,
-					cssClass: '',
-					tip_description: '',
-					options: [],
-					fileSize: '',
-					fileType: [],
-					muliple: false,
-					recaptchatype: 'v3',
-					sitekey: '',
-					secretkey: '',
-					script: '',
+		if (!catalogappLocalizer.pro_active) {
+
+			axios({
+				url: `${catalogappLocalizer.apiUrl}/mvx_catalog_pro/v1/fetch_enquiry_data`,
+			}).then((response) => {
+				let formJson4 = this.state.mvx_registration_fileds_list;
+				if (response.data.length > 0) {
+					formJson4 = response.data;
+				} else {
+					formJson4.push({
+						id: 'parent_title',
+						type: 'p_title',
+						label: '',
+						hidden: false,
+						label_placeholder: '',
+						description: '',
+						description_placeholder: '',
+					});
+
+					formJson4.push({
+						id: formJson4.length,
+						type: 'textbox',
+						label: '',
+						hidden: false,
+						placeholder: '',
+						required: false,
+						cssClass: '',
+						tip_description: '',
+						options: [],
+						fileSize: '',
+						fileType: [],
+						muliple: false,
+						recaptchatype: 'v3',
+						sitekey: '',
+						secretkey: '',
+						script: '',
+					});
+				}
+				this.setState({
+					mvx_registration_fileds_list: formJson4,
 				});
-			}
-			this.setState({
-				mvx_registration_fileds_list: formJson4,
 			});
-		});
+		}
 	}
 
 	onChange = (e, key, type = 'single', from_type = '', array_values = []) => {
@@ -874,7 +878,7 @@ export default class DynamicForm extends React.Component {
 				);
 				const country_list_array = [];
 				const statefromcountrycode = JSON.parse(
-					appLocalizer.countries.replace(/&quot;/g, '"')
+					catalogappLocalizer.countries.replace(/&quot;/g, '"')
 				)[e.value];
 				for (const key_country in statefromcountrycode) {
 					country_list_array.push({
@@ -1361,7 +1365,7 @@ export default class DynamicForm extends React.Component {
 										type="text"
 										className="mvx-rgistration-form-title"
 										placeholder={
-											appLocalizer.settings_page_string
+											catalogappLocalizer.settings_page_string
 												.registration_form_title
 										}
 										value={
@@ -1379,7 +1383,7 @@ export default class DynamicForm extends React.Component {
 									/>
 									<div className="mvx-registration-form-description">
 										{
-											appLocalizer.settings_page_string
+											catalogappLocalizer.settings_page_string
 												.registration_form_title_desc
 										}
 									</div>
@@ -1388,7 +1392,7 @@ export default class DynamicForm extends React.Component {
 									<input
 										type="text"
 										placeholder={
-											appLocalizer.settings_page_string
+											catalogappLocalizer.settings_page_string
 												.registration_form_desc
 										}
 										value={
@@ -1406,7 +1410,7 @@ export default class DynamicForm extends React.Component {
 									/>
 									<div className="mvx-registration-form-description">
 										{
-											appLocalizer.settings_page_string
+											catalogappLocalizer.settings_page_string
 												.registration1
 										}
 									</div>
@@ -1469,7 +1473,7 @@ export default class DynamicForm extends React.Component {
 																{registration_json_value.hidden ? (
 																	<div className="mvx-registration-form-description">
 																		{
-																			appLocalizer
+																			catalogappLocalizer
 																				.settings_page_string
 																				.registration2
 																		}
@@ -1497,7 +1501,7 @@ export default class DynamicForm extends React.Component {
 																		{this.state.registration_global_select_dropdown_open ?
 																			<div className="mvx-registration-dropdown-menu">
 
-																				{appLocalizer.settings_page_string[
+																				{catalogappLocalizer.settings_page_string[
 																					'question-format'
 																				].map(
 																					(
@@ -1526,7 +1530,7 @@ export default class DynamicForm extends React.Component {
 
 																	<div className="mvx-registration-form-description">
 																		{
-																			appLocalizer
+																			catalogappLocalizer
 																				.settings_page_string
 																				.registration1
 																		}
@@ -1569,7 +1573,7 @@ export default class DynamicForm extends React.Component {
 																			<input
 																				type="text"
 																				placeholder={
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration4
 																				}
@@ -1588,7 +1592,7 @@ export default class DynamicForm extends React.Component {
 																			/>
 																			<div className="mvx-registration-form-description">
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration6
 																				}
@@ -1599,7 +1603,7 @@ export default class DynamicForm extends React.Component {
 																			<input
 																				type="text"
 																				placeholder={
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration5
 																				}
@@ -1618,7 +1622,7 @@ export default class DynamicForm extends React.Component {
 																			/>
 																			<div className="mvx-registration-form-description">
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration7
 																				}
@@ -1636,7 +1640,7 @@ export default class DynamicForm extends React.Component {
 																	<div className="mvx-vendor-form-input-field-container">
 																		<label>
 																			{
-																				appLocalizer
+																				catalogappLocalizer
 																					.settings_page_string
 																					.registration8
 																			}
@@ -1658,7 +1662,7 @@ export default class DynamicForm extends React.Component {
 																		/>
 																		<div className="mvx-registration-form-description">
 																			{
-																				appLocalizer
+																				catalogappLocalizer
 																					.settings_page_string
 																					.registration9
 																			}
@@ -1691,7 +1695,7 @@ export default class DynamicForm extends React.Component {
 																			/>
 																			<label className="auto-width">
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration11
 																				}
@@ -1702,7 +1706,7 @@ export default class DynamicForm extends React.Component {
 																			<input
 																				type="text"
 																				placeholder={
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration12
 																				}
@@ -1721,7 +1725,7 @@ export default class DynamicForm extends React.Component {
 																			/>
 																			<div className="mvx-registration-form-description">
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration13
 																				}
@@ -1731,7 +1735,7 @@ export default class DynamicForm extends React.Component {
 																		<div className="mvx-vendor-form-input-field-container">
 																			<label>
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration14
 																				}
@@ -1771,7 +1775,7 @@ export default class DynamicForm extends React.Component {
 
 																			<div className="mvx-registration-form-description">
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration15
 																				}
@@ -1805,7 +1809,7 @@ export default class DynamicForm extends React.Component {
 																			<div className="mvx-registration-recapta-option">
 																				<label className="mvx-form-title">
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration16
 																					}
@@ -1813,14 +1817,14 @@ export default class DynamicForm extends React.Component {
 																				<select>
 																					<option value="v3">
 																						{
-																							appLocalizer
+																							catalogappLocalizer
 																								.settings_page_string
 																								.registration17
 																						}
 																					</option>
 																					<option value="v2">
 																						{
-																							appLocalizer
+																							catalogappLocalizer
 																								.settings_page_string
 																								.registration18
 																						}
@@ -1834,7 +1838,7 @@ export default class DynamicForm extends React.Component {
 																			<div className="mvx-vendor-form-input-field-container">
 																				<label className="mvx-form-title">
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration19
 																					}
@@ -1864,7 +1868,7 @@ export default class DynamicForm extends React.Component {
 																			<div className="mvx-vendor-form-input-field-container">
 																				<label className="mvx-form-title">
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration20
 																					}
@@ -1895,7 +1899,7 @@ export default class DynamicForm extends React.Component {
 																			<div className="mvx-vendor-form-input-field-container">
 																				<label className="mvx-form-title">
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration21
 																					}
@@ -1924,20 +1928,20 @@ export default class DynamicForm extends React.Component {
 																		<div className="mvx-vendor-form-input-field-container">
 																			<p>
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration26
 																				}
 																				<b>
 																					{' '}
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration27
 																					}
 																				</b>{' '}
 																				{
-																					appLocalizer
+																					catalogappLocalizer
 																						.settings_page_string
 																						.registration28
 																				}
@@ -1948,7 +1952,7 @@ export default class DynamicForm extends React.Component {
 																				>
 																					{' '}
 																					{
-																						appLocalizer
+																						catalogappLocalizer
 																							.settings_page_string
 																							.registration29
 																					}
@@ -1958,7 +1962,7 @@ export default class DynamicForm extends React.Component {
 
 																		<div className="mvx-registration-form-description">
 																			{
-																				appLocalizer
+																				catalogappLocalizer
 																					.settings_page_string
 																					.registration24
 																			}
@@ -2050,7 +2054,7 @@ export default class DynamicForm extends React.Component {
 																							{registration_json_value.hidden ?
 																							<div className="mvx-registration-form-description">
 																								{
-																									appLocalizer
+																									catalogappLocalizer
 																										.settings_page_string
 																										.registration22
 																								}
@@ -2078,7 +2082,7 @@ export default class DynamicForm extends React.Component {
 																							/>
 																							<div className="mvx-registration-form-description">
 																								{
-																									appLocalizer
+																									catalogappLocalizer
 																										.settings_page_string
 																										.registration23
 																								}
@@ -2173,7 +2177,7 @@ export default class DynamicForm extends React.Component {
 																></i>
 																<span className="mvx-perple-txt">
 																	{
-																		appLocalizer
+																		catalogappLocalizer
 																			.settings_page_string
 																			.registration25
 																	}{' '}
@@ -2762,7 +2766,7 @@ export default class DynamicForm extends React.Component {
 										(
 										axios({
 											method: 'post',
-											url: `${appLocalizer.apiUrl}/mvx_membership/v1/update_membership`,
+											url: `${catalogappLocalizer.apiUrl}/mvx_membership/v1/update_membership`,
 											data: {
 												action: 'verified', id: row.user_id, status: o.status
 											},
@@ -2865,7 +2869,7 @@ export default class DynamicForm extends React.Component {
 							}}
 						/>
 						<img
-							src={value ? value : appLocalizer.default_logo}
+							src={value ? value : catalogappLocalizer.default_logo}
 							width={m.width}
 							height={m.height}
 						/>
@@ -2877,7 +2881,7 @@ export default class DynamicForm extends React.Component {
 								this.runUploader(e, target, index);
 							}}
 						>
-							{appLocalizer.global_string.open_uploader}
+							{catalogappLocalizer.global_string.open_uploader}
 						</button>
 						{m.desc ? (
 							<p
@@ -2894,7 +2898,7 @@ export default class DynamicForm extends React.Component {
 			if (type === 'wpeditor') {
 				input = (
 			      <Editor
-			          apiKey={appLocalizer.mvx_tinymce_key}
+			          apiKey={catalogappLocalizer.mvx_tinymce_key}
 			          value={value}
 			          init={{
 			            height: 200,
@@ -2914,8 +2918,8 @@ export default class DynamicForm extends React.Component {
 				this.state.vendor_lng = m.store_lng;
 
 				input =
-					appLocalizer.location_provider.value &&
-					appLocalizer.location_provider.value ===
+					catalogappLocalizer.location_provider.value &&
+					catalogappLocalizer.location_provider.value ===
 						'google_map_set' ? (
 						<div>
 							{mapApiLoaded && (
@@ -2940,7 +2944,7 @@ export default class DynamicForm extends React.Component {
 									onChildMouseMove={this.onMarkerInteraction}
 									onClick={this._onClick}
 									bootstrapURLKeys={{
-										key: appLocalizer.google_api,
+										key: catalogappLocalizer.google_api,
 										libraries: ['places', 'geometry'],
 									}}
 									yesIWantToUseGoogleMapApiInternals
@@ -2951,7 +2955,7 @@ export default class DynamicForm extends React.Component {
 									<AnyReactComponent
 										lat={m.store_lat}
 										lng={m.store_lng}
-										text={appLocalizer.marker_icon}
+										text={catalogappLocalizer.marker_icon}
 									/>
 								</GoogleMapReact>
 							</div>
@@ -3828,7 +3832,7 @@ export default class DynamicForm extends React.Component {
 
 		axios({
 			method: 'post',
-			url: `${appLocalizer.apiUrl}/mvx_module/v1/update_vendor_store`,
+			url: `${catalogappLocalizer.apiUrl}/mvx_module/v1/update_vendor_store`,
 			data: {
 				places: place_data,
 				lat: place.geometry.location.lat(),
@@ -3846,8 +3850,6 @@ export default class DynamicForm extends React.Component {
 		geocoder.geocode(
 			{ location: { lat: this.state.lat, lng: this.state.lng } },
 			(results, status) => {
-				console.log(results);
-				console.log(status);
 				if (status === 'OK') {
 					if (results[0]) {
 						this.zoom = 12;
@@ -3889,7 +3891,7 @@ export default class DynamicForm extends React.Component {
 			<div className="mvx-dynamic-fields-wrapper">
 				{this.state.errordisplay ? (
 					<div className="mvx-notic-display-title">
-						<i className="mvx-font icon-yes"></i>
+						<i className="mvx-catalog icon-success-notification"></i>
 						{this.state.errordisplay}
 					</div>
 				) : (
@@ -3924,14 +3926,14 @@ export default class DynamicForm extends React.Component {
 
 								{this.state.from_loading && (
 									<span>
-										{appLocalizer.global_string.saving}
+										{catalogappLocalizer.global_string.saving}
 									</span>
 								)}
 								{!this.state.from_loading && (
 									<span>
 										{this.props.submit_title
 											? this.props.submit_title
-											: appLocalizer.global_string.save}
+											: catalogappLocalizer.global_string.save}
 									</span>
 								)}
 							</button>

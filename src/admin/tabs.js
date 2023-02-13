@@ -1,4 +1,4 @@
-/* global appLocalizer */
+/* global catalogappLocalizer */
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import HeaderSection from './header';
@@ -36,7 +36,7 @@ export default class TabSection extends Component {
 			: query_name;
 		if (this.props.subtab !== this.state.current_url) {
 			axios({
-				url: `${appLocalizer.apiUrl}/mvx_catalog/v1/fetch_admin_tabs`,
+				url: `${catalogappLocalizer.apiUrl}/mvx_catalog/v1/fetch_admin_tabs`,
 			}).then((response) => {
 				this.setState({
 					fetch_admin_tabs: response.data ? response.data[this.props.model] : [],

@@ -1,4 +1,4 @@
-/* global appLocalizer */
+/* global catalogappLocalizer */
 import React, { Component } from 'react';
 class AutoComplete extends Component {
 	constructor(props) {
@@ -48,7 +48,7 @@ class AutoComplete extends Component {
 				}}
 				type="text"
 				onFocus={this.clearSearchBox}
-				placeholder={appLocalizer.vendor_page_string.enter_location}
+				placeholder={catalogappLocalizer.vendor_page_string.enter_location}
 			/>
 		);
 	}

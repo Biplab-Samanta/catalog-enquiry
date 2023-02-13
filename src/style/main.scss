@@ -25,6 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-next:before {
+  content: "\e906";
+}
+.icon-previous:before {
+  content: "\e907";
+}
+.icon-select:before {
+  content: "\e908";
+}
+.icon-success-notification:before {
+  content: "\e909";
+}
 .icon-button-appearance-tab:before {
   content: "\e900";
 }
@@ -43,6 +55,7 @@
 .icon-upgrade-to-pro-tab:before {
   content: "\e905";
 }
+
 
 
 
@@ -146,6 +159,14 @@ $scroll-color:#ece8f1;
   padding: 0.5rem 1rem 0.5rem 0.6rem;
   border-radius: $border-radius;
  }
+ @keyframes slide-right {
+  0% {transform: translateX(-20%);  }
+  100% {    transform: translateX(0);  }
+}
+@keyframes slide-left {
+  from {    transform: translateX(20%);  }
+  to {    transform: translateX(0);  }
+}
  @mixin toggle-btn-disable {
   input[type=checkbox]{
       height: 0;
@@ -451,7 +472,7 @@ input:checked{
   border: 0;
 }
 input[type=radio]:checked::before {
-  font-family: 'mvx-admin-font' !important;//redio btn style
+  font-family: "mvx-catalog" !important;//redio btn style
   margin: 0rem;
   content: '\e943';
   color: $theme-color ;
@@ -465,8 +486,8 @@ input[type=text]:focus {
   box-shadow: none;
 }
 input[type=checkbox]:checked::before {
-  font-family: 'mvx-admin-font' !important;// checkbox icon style
-  content: '\e909';
+  font-family: "mvx-catalog" !important;// checkbox icon style
+  content: '\e908';
   color: $fill-color;
   font-size: 0.625rem;
   line-height: 1rem;
@@ -973,7 +994,7 @@ hr{
             box-shadow: none;
           }
           &:checked::before {
-            content: '\e909';
+            content: '\e908';
             color: $fill-color;
             font-size: 0.625rem;
             background-color: $theme-color !important;//redio btn style
@@ -995,7 +1016,6 @@ hr{
             opacity: 0;
             @include flexprops(center);
             justify-content: center;
-            padding: 0.5rem;
             border-radius: $border-radius;
           }
          &:hover {
@@ -1237,7 +1257,7 @@ hr{
         &::before{
           position: absolute;
           content: "\e95b";
-          font-family: 'mvx-admin-font';
+          font-family: "mvx-catalog" ;
           color: $blue-icon;
           top: 0;
           left: 50%;
@@ -1734,7 +1754,7 @@ hr{
             &:before{
               position: absolute;
               content: "\e907";
-              font-family: "mvx-admin-font";
+              font-family: "mvx-catalog";
               font-size: 0.5rem;
               background: $code-line;
               color: $font-white;
@@ -1867,9 +1887,7 @@ hr{
         margin: auto;
         background: #4e1a74;
         box-shadow: 0rem 1.125rem 2.75rem 0rem #3f14731f;
-        background: -webkit-gradient(left top, right bottom, color-stop(0%, #4e1a74), color-stop(100%, #d64959));
         background: linear-gradient(135deg, #4e1a74 0%, #d64959 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4e1a74', endColorstr='#d64959',  GradientType=1);
       }
     }
   }
@@ -2058,7 +2076,7 @@ a {
             font-size: 0.438rem;
             color: $red-icon;
           }
-          & .icon-yes {
+          & .icon-select {
             font-size: 0.438rem;
             color: $blue-icon;
           }
@@ -3054,17 +3072,26 @@ padding:0;
 .mvx-sidebar{
   .mvx-banner-top{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
     padding: 2rem ;
     text-align: left;
-    background-color: #fdfdfe;
-    background-size: 100% 100%;
+    background-image:  url(../../assets/images/banner-back-color.jpg);
+    background-size:  100% 100%;
+    background-position: left top, top right;
+    background-repeat: no-repeat, no-repeat;
+    color: #f9f8fb;
     border-radius: 0.25rem;
     margin: 1.25rem 0;
     border: 0.06rem solid $boder-color;
     flex-wrap: wrap;
+    transition: 0.5s all ease-in-out;
+    overflow: hidden;
+    max-height: 7rem;
+    &:hover{
+    background-size: 110% 110%;
+    }
   }
 }
 .mvx-settings-own-button {
@@ -3204,6 +3231,7 @@ a.catalog-upgrade {
   }
   .mvx-tab-content{
   width:68%;
+  flex: 1;
 }}
 .mvx-compare-table-holder{
 li.mvx-compare-table-row{
@@ -3366,27 +3394,7 @@ li.mvx-compare-table-row{
     }
   }
   .mvx-banner-right {
-    @include flexprops(center);
-    flex-direction: column;
-    gap: 1rem;
-    padding: 3rem 1rem 5rem;
     width: 16.188rem;
-    text-align: center;
-    // background: url(../../images/unnamed.png) top right no-repeat;
-    background-image: linear-gradient(179deg, #db4b54, #af3b74, #3f1473);
-    background-size: 100% 100%;
-  border-radius:$border-radius;
-    p{
-      font-size: 1rem;
-      color: $scroll-color;
-    }
-    a{
-      font-weight: 500;
-      color: $font-white;
-      background: $font-white;
-      padding: 0 0.25rem;
-      color: #db4b54;
-    }
 }
 }
 // commmision page css date picker
@@ -3439,7 +3447,8 @@ a.mvx-btn.btn-red{
   @include red-btn();
   transition: all 0.3s ease;
     border-radius: 0.25rem;
-    padding: 0.594rem 1rem;
+    font-weight: 600;
+    padding: 0.37rem 2.5rem;
     cursor: pointer;
     vertical-align: middle;
     white-space: nowrap;
@@ -3449,32 +3458,49 @@ a.mvx-btn.btn-red{
     }
 }
 .mvx-banner-top{
+  .mvx-logo-top {
+    width: 100%;
+    text-align: center;
+  }
   .mvx-pro-txt{
-    display: flex;
-    gap: 1rem;
     .mvx-pro-txt-items {
       h3{
         margin: 0 ;
+        color: #f9f8fb;
       }
       p{      
-       margin: 0.5rem 0 1.25rem;
+       margin: 0.5rem 0 1.5rem;
+       color: #f9f8fb;
       }
     }
   }
-  .mvx-dashboard-top-icon {
-    font-size: 1.5rem;
-    background: #9f8ab9;
-    border-radius: 0.25rem;
-    color: #f9f8fb;
-    padding: 0.9rem;
-    height: 2rem;
-    line-height: 2rem;
-    width: 2rem;
-}
 .message-banner-sliding {
-  border: 0.06rem solid #181718;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  margin-left: auto;
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    a{
+      background-color: $font-white;
+      padding: 0.35rem;
+      border-radius: 50%;
+      color: $theme-color;
+      font-size: 0.65rem;
+      line-height: 1;
+      &:focus{
+        outline: none;
+        box-shadow: none;
+      }
+      &:hover{
+        text-decoration: none;
+      }
+      & i{
+        font-weight: 600;
+      }
+    }
 }
 }
+.mvx-tab-content span {
+  margin: auto;
+}
+
+

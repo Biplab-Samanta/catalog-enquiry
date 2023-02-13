@@ -23,11 +23,10 @@ class Woocommerce_Catalog_Enquiry_Settings {
     }
     add_submenu_page( 'catalog', __( 'Settings', 'catalog' ), __( 'Settings', 'catalog' ), 'manage_woocommerce', 'catalog#&tab=settings&subtab=general', '__return_null' );
 
+    if (apply_filters('mvx_catalog_free_only_active', true)) {
+      $submenu[ $slug ][] = [ __( '<div id="upgrade-to-pro"><i class="mvx-catalog icon-upgrade-to-pro-tab"></i>Upgrade to pro</div>', 'multivendorx' ), 'manage_woocommerce', 'https://multivendorx.com/pricing' ];
+    }
     
-    $submenu[ $slug ][] = [ __( '<div id="upgrade-to-pro"><i class="mvx-catalog icon-upgrade-to-pro-tab"></i>Upgrade to pro</div>', 'multivendorx' ), 'manage_woocommerce', 'https://multivendorx.com/pricing' ];
-
-    //add_submenu_page( 'catalog', __( 'Dashboard', 'catalog' ), __( 'Dashboard', 'catalog' ), 'manage_woocommerce', 'catalog#&tab=dashboard', '__return_null' );
-
     remove_submenu_page( 'catalog', 'catalog' );
   }
 
@@ -46,9 +45,152 @@ class Woocommerce_Catalog_Enquiry_Settings {
     if (get_current_screen()->id == 'toplevel_page_catalog') {
       wp_enqueue_style( 'mvx-catalog-style', $Woocommerce_Catalog_Enquiry->plugin_url . 'src/style/main.css' );
       wp_enqueue_script( 'mvx-catalog-script', $Woocommerce_Catalog_Enquiry->plugin_url . 'build/index.js', array( 'wp-element' ), '1.0.0', true );
-      wp_localize_script( 'mvx-catalog-script', 'appLocalizer', apply_filters('catalog_settings', [
+      $settings_page_string = array(
+            'registration_form_title'       =>  __('Registration form title', 'multivendorx'),
+            'registration_form_title_desc'  =>  __('Type the form title you want the vendor to see. eg registrazione del venditore', 'multivendorx'),
+            'registration_form_desc'        =>  __('Registration form description', 'multivendorx'),
+            'registration1'                  =>  __('Introduce your marketplace or add instructions for registration', 'multivendorx'),
+            'registration2'                  =>  __('Write questions applicable to your marketplace', 'multivendorx'),
+            'registration3'                  =>  __('Select your preferred question format. Read doc to know more about each format.', 'multivendorx'),
+            'registration4'                  =>  __('Placeholder', 'multivendorx'),
+            'registration5'                  =>  __('Tooltip description', 'multivendorx'),
+            'registration6'                  =>  __('Leave this section blank or add examples of an answer here.', 'multivendorx'),
+            'registration7'                  =>  __('Add more information or specific instructions here.', 'multivendorx'),
+            'registration8'                  =>  __('Characters Limit', 'multivendorx'),
+            'registration9'                  =>  __('Restrict vendor descriptions to a certain number of characters.', 'multivendorx'),
+            'registration11'                  =>  __('Multiple', 'multivendorx'),
+            'registration12'                  =>  __('Maximum file size', 'multivendorx'),
+            'registration13'                  =>  __('Add limitation for file size', 'multivendorx'),
+            'registration14'                  =>  __('Acceptable file types', 'multivendorx'),
+            'registration15'                  =>  __('Choose preferred file size.', 'multivendorx'),
+            'registration16'                  =>  __('reCAPTCHA Type', 'multivendorx'),
+            'registration17'                  =>  __('reCAPTCHA v3', 'multivendorx'),
+            'registration18'                  =>  __('reCAPTCHA v2', 'multivendorx'),
+            'registration19'                  =>  __('Site key', 'multivendorx'),
+            'registration20'                  =>  __('Secret key', 'multivendorx'),
+            'registration21'                  =>  __('Recaptcha Script', 'multivendorx'),
+            'registration22'                  =>  __('Write titles for your options here.', 'multivendorx'),
+            'registration23'                  =>  __('This section is available for developers who might want to mark the labels they create.', 'multivendorx'),
+            'registration24'                  =>  __('', 'multivendorx'),
+            'registration25'                  =>  __('Require', 'multivendorx'),
+            'registration26'                  =>  __('To get', 'multivendorx'),
+            'registration27'                  =>  __('reCAPTCHA', 'multivendorx'),
+            'registration28'                  =>  __('script, register your site with google account', 'multivendorx'),
+            'registration29'                  =>  __('Register', 'multivendorx'),
+            'question-format'                 => array(
+                array(
+                    'icon'  =>  'icon-select-question-type',
+                    'value' => 'select_question_type',
+                    'label' =>  __('Select question type', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-textbox',
+                    'value' => 'textbox',
+                    'label' =>  __('Textbox', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-email',
+                    'value' => 'email',
+                    'label' =>  __('Email', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-url',
+                    'value' => 'url',
+                    'label' =>  __('Url', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-textarea',
+                    'value' => 'textarea',
+                    'label' =>  __('Textarea', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-checkboxes',
+                    'value' => 'checkboxes',
+                    'label' =>  __('Checkboxes', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-multi-select',
+                    'value' => 'multi-select',
+                    'label' =>  __('Multi Select', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-radio',
+                    'value' => 'radio',
+                    'label' =>  __('Radio', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-dropdown',
+                    'value' => 'dropdown',
+                    'label' =>  __('Dropdown', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-recaptcha',
+                    'value' => 'recapta',
+                    'label' =>  __('Recapta', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-attachment',
+                    'value' => 'attachment',
+                    'label' =>  __('Attachment', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-section',
+                    'value' => 'section',
+                    'label' =>  __('Section', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-store-description',
+                    'value' => 'vendor_description',
+                    'label' =>  __('Store Description', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-address01',
+                    'value' => 'vendor_address_1',
+                    'label' =>  __('Address 1', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-address02',
+                    'value' => 'vendor_address_2',
+                    'label' =>  __('Address 2', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-phone',
+                    'value' => 'vendor_phone',
+                    'label' =>  __('Phone', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-country',
+                    'value' => 'vendor_country',
+                    'label' =>  __('Country', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-state',
+                    'value' => 'vendor_state',
+                    'label' =>  __('State', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-city',
+                    'value' => 'vendor_city',
+                    'label' =>  __('City', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-postcode',
+                    'value' => 'vendor_postcode',
+                    'label' =>  __('Postcode', 'multivendorx')
+                ),
+                array(
+                    'icon'  =>  'icon-form-paypal-email',
+                    'value' => 'vendor_paypal_email',
+                    'label' =>  __('PayPal Email', 'multivendorx')
+                )
+            )
+        );
+      wp_localize_script( 'mvx-catalog-script', 'catalogappLocalizer', apply_filters('catalog_settings', [
         'apiUrl' => home_url( '/wp-json' ),
         'nonce' => wp_create_nonce( 'wp_rest' ),
+        'banner_img'  => $Woocommerce_Catalog_Enquiry->plugin_url . 'assets/images/catalog-pro-add-admin-banner.jpg',
+        'settings_page_string'  =>  $settings_page_string,
+        'pro_active'    =>  apply_filters('mvx_catalog_free_only_active', true)
       ] ) );
     }
   }
